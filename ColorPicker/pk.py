@@ -129,27 +129,52 @@ class Colpk(object):
             BUG introduced in API (2.93+) due to bgl module deprecation,
             limits the 'POINT' shader type to 128px of radius (total dimensions of 256x256px).
         '''
-        width = xf - xi
-        if width > 574:
-            w_2 = (width - 574) / 2.0
-            xf -= w_2
-            xi += w_2
+        if context.mode == 'PAINT_WEIGHT':
+            width = xf - xi
+            if width > 284:
+                w_2 = (width - 284) / 2.0
+                xf -= w_2
+                xi += w_2
 
-        elif width < 256:
-            w_2 = (256 - width) / 2.0
-            xf += w_2
-            xi -= w_2
-        
-        height = yf - yi
-        if height > 310:
-            h_2 = (height - 310) / 2.0
-            yf -= h_2
-            yi += h_2
+            elif width < 170:
+                w_2 = (170 - width) / 2.0
+                xf += w_2
+                xi -= w_2
+            
+            width = xf - xi
+            height = yf - yi
+            if height > width / 2.5:
+                h_2 = (height - (width / 2.5)) / 2.0
+                yf -= h_2
+                yi += h_2
 
-        elif height < 256:
-            h_2 = (256 - height) / 2.0
-            yf += h_2
-            yi -= h_2
+            elif height < 80:
+                h_2 = (80 - height) / 2.0
+                yf += h_2
+                yi -= h_2
+
+        else:
+            width = xf - xi
+            if width > 574:
+                w_2 = (width - 574) / 2.0
+                xf -= w_2
+                xi += w_2
+
+            elif width < 256:
+                w_2 = (256 - width) / 2.0
+                xf += w_2
+                xi -= w_2
+            
+            height = yf - yi
+            if height > 310:
+                h_2 = (height - 310) / 2.0
+                yf -= h_2
+                yi += h_2
+
+            elif height < 256:
+                h_2 = (256 - height) / 2.0
+                yf += h_2
+                yi -= h_2
 
         ''' ################################### '''
 
@@ -176,7 +201,7 @@ class Colpk(object):
             DiLN((.8, .8, .8, 1), (fpos.x, wpos.y-1), (fpos.x, wpos.y+wsize.y+2))
             RstLineSBlend()
             DiMARCRCT(wpos, wsize, (.21, .21, .21, .5))
-            Draw_Text_AlignCenter(*wpos + wsize/2, value[:4], 32, (1,1,1,.75))
+            Draw_Text_AlignCenter(*wpos + wsize/2, value[:4], 20, (1,1,1,.75))
         weight_sld_box = Subtuoya(wrapper, Anchor(0, 1, 0, 1))
         weight_sld_box.set_draw_callback(draw_box)
         weight_sld_box.set_unified_padding(4)

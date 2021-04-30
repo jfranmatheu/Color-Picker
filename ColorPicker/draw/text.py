@@ -17,7 +17,7 @@ def Draw_Text(_x, _y, _text, _size, _r = 1, _g = 1, _b = 1, _a = 1, _use_shadow 
     if _use_shadow:
         _font_id += 1
         text_enable(_font_id, SHADOW)
-        text_shadow(_font_id, 3, 0, 0, 0, .6)
+        text_shadow(_font_id, 3, 0, 0, 0, 1.0)
         text_shadow_offset(_font_id, -1, -1)
     text_color(_font_id, _r, _g, _b, _a)
     text_position(_font_id, _x, _y, 0) # -6/-6 para "o" #
@@ -31,7 +31,7 @@ def Draw_Text_AlignCenter(_x=0, _y=0, _text='', _text_size=12, _text_color=(1, 1
     if _use_shadow:
         _font_id += 1
         text_enable(_font_id, SHADOW)
-        text_shadow(_font_id, 3, 0, 0, 0, .6)
+        text_shadow(_font_id, 3, 0, 0, 0, 1.0)
         text_shadow_offset(_font_id, -1, -1)
     text_size(_font_id, _text_size, text_settings['dpi'])
     dim = text_dim(_font_id, _text)
