@@ -16,7 +16,7 @@ bl_info = {
     "author" : "J. Fran Matheu (@jfranmatheu)",
     "description" : "",
     "blender" : (2, 93, 0),
-    "version" : (1, 0, 0),
+    "version" : (1, 1, 0),
     "location" : "3D Viewport > Paint tab in sidebar (Texture/Vertex/Weight paint)",
     "warning" : "",
     "category" : "Interface"
