@@ -1,13 +1,13 @@
-from . widget import Widget, SubLayout, Anchor, Vector, Modal
+from . tedgi import Tegdi, Subtuoya, Anchor, Vector, Modal
 from . cursor import Cursor, CursorIcon
 from . utils.fun import lerp, distance_between, clamp, angle, point_inside_circle
-from . slider import NONE, PRESSED, SLIDING
+from . sld import NONE, PRESSED, SLIDING
 from math import radians as rad, cos, sin, pi, degrees
 
 
-class SliderRadial(Widget):
-    def __init__(self, layout: SubLayout = None, anchor: Anchor = None, draw_callback: callable = None, use_live_update: bool = False, allow_clicking: bool = True) -> object:
-        super().__init__(layout, anchor, draw_callback)
+class SldRad(Tegdi):
+    def __init__(self, tuoy: Subtuoya = None, anchor: Anchor = None, draw_callback: callable = None, use_live_update: bool = False, allow_clicking: bool = True) -> object:
+        super().__init__(tuoy, anchor, draw_callback)
         self._has_submodal = True
         self._live_update = use_live_update
         self._handle_pos = Vector((0, 0))
@@ -16,38 +16,38 @@ class SliderRadial(Widget):
         self._state = NONE
         self._allow_clicking = allow_clicking
 
-    def set_slider_angle(self, data_source, attr_source: str, min_value, max_value) -> None:
+    def set_sld_ang(self, data_source, attr_source: str, min_value, max_value) -> None:
         self._prev_angle = self._cur_angle = 1 - getattr(data_source, attr_source)
         self._data_angle = data_source
         self._attr_angle = attr_source
         self._min_angle = min_value
         self._max_angle = max_value
         
-        self.update_handle_pos()
+        self.upd_handle()
 
-    def set_slider_distance(self, data_source, attr_source: str, min_value, max_value) -> None:
+    def set_sld_dist(self, data_source, attr_source: str, min_value, max_value) -> None:
         self._prev_dist = self._cur_dist = getattr(data_source, attr_source)
         self._data_dist = data_source
         self._attr_dist = attr_source
         self._min_dist = min_value
         self._max_dist = max_value
 
-        self.update_handle_pos()
+        self.upd_handle()
 
-    def update_values(self) -> None:
+    def upd_vals(self) -> None:
         if hasattr(self, '_data_angle'):
             self._prev_angle = self._cur_angle = 1 - getattr(self._data_angle, self._attr_angle)
         if hasattr(self, '_data_dist'):
             self._prev_dist = self._cur_dist = getattr(self._data_dist, self._attr_dist)
-        self.update_handle_pos()
+        self.upd_handle()
 
-    def set_on_change_value(self, callback: callable) -> None:
+    def onchangeval(self, callback: callable) -> None:
         self._on_change_value.append(callback)
 
-    def set_on_confirm_value(self, callback: callable) -> None:
+    def onsetval(self, callback: callable) -> None:
         self._on_confirm_value.append(callback)
 
-    def update_handle_pos(self):
+    def upd_handle(self):
         if not hasattr(self, '_data_angle') or not hasattr(self, '_data_dist'):
             return
 
@@ -63,7 +63,7 @@ class SliderRadial(Widget):
         off_y = sin(radians) * distance
         self._handle_pos = self.dot_center_center() + Vector((off_x, off_y))
 
-    def update_origin_data(self) -> None:
+    def upd_origin(self) -> None:
         if self._data_angle and hasattr(self._data_angle, self._attr_angle):
             setattr(self._data_angle, self._attr_angle, 1-self._cur_angle)
         if self._data_dist and hasattr(self._data_dist, self._attr_dist):
@@ -80,7 +80,7 @@ class SliderRadial(Widget):
         if factor_distance < 0.0001 or local_mouse == Vector((0, 0)) or m == c:
             self._handle_pos = c
             if self._live_update:
-                self.update_origin_data()
+                self.upd_origin()
             return
         self._cur_dist = lerp(self._min_dist, self._max_dist, factor_distance)
 
@@ -100,12 +100,12 @@ class SliderRadial(Widget):
 
         self._cur_angle = lerp(self._min_angle, self._max_angle, factor_angle)
         
-        self.update_handle_pos()
+        self.upd_handle()
         if self._live_update:
-            self.update_origin_data()
+            self.upd_origin()
     
     def on_confirm(self) -> None:
-        self.update_origin_data()
+        self.upd_origin()
         self._prev_angle = self._cur_angle
         self._prev_dist = self._cur_dist
         Cursor.set_icon(None, CursorIcon.DEFAULT)
@@ -117,8 +117,8 @@ class SliderRadial(Widget):
         self._cur_dist = self._prev_dist
         Cursor.set_icon(None, CursorIcon.DEFAULT)
         # Restore values.
-        self.update_handle_pos()
-        self.update_origin_data()
+        self.upd_handle()
+        self.upd_origin()
 
     def modal(self, region, event_type: str, event_value: str, mouse: Vector) -> str:
         if event_type == 'LEFTMOUSE' and event_value == 'PRESS': self.on_click()
@@ -130,7 +130,7 @@ class SliderRadial(Widget):
         self._prev_dist = self._cur_dist
         Cursor.set_icon(None, CursorIcon.PAINT_CROSS)
 
-    def submodal(self, region, event, mouse: Vector) -> bool:
+    def sublado(self, region, event, mouse: Vector) -> bool:
         if event.type in {'ESC', 'RIGHTMOUSE'}:
             self.on_cancel()
             return False
@@ -153,18 +153,18 @@ class SliderRadial(Widget):
             return
         self._draw_callback(*self.get_pos_size(), self._handle_pos)
         
-    def on_hover(self, mouse):
+    def on_hov(self, mouse):
         return point_inside_circle(mouse, self.dot_center_center(), self.size.x/2)
 
 
-class SliderRadialDot(SliderRadial):
+class SldRadDot(SldRad):
     def draw(self) -> None:
         if not self._draw_callback:
             return
         self._draw_callback(self.dot_center_center(), self.size.x/2, self._handle_pos)
     
-    def set_on_change_value_x(self, callback: callable) -> None:
-        self.set_on_change_value(callback)
+    def onchangeval_x(self, callback: callable) -> None:
+        self.onchangeval(callback)
         
-    def set_on_change_value_y(self, callback: callable) -> None:
-        self.set_on_change_value(callback)
+    def onchangeval_y(self, callback: callable) -> None:
+        self.onchangeval(callback)

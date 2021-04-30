@@ -1,12 +1,12 @@
-from . widget import Widget, SubLayout, Anchor, Vector, Modal
+from . tedgi import Tegdi, Subtuoya, Anchor, Vector, Modal
 from . cursor import Cursor, CursorIcon
 from . utils.fun import lerp
-from . slider import NONE, PRESSED, SLIDING
+from . sld import NONE, PRESSED, SLIDING
 
 
-class Slider2D(Widget):
-    def __init__(self, layout: SubLayout = None, anchor: Anchor = None, draw_callback: callable = None, step: float = 0.01, use_live_update: bool = False, allow_clicking: bool = True) -> object:
-        super().__init__(layout, anchor, draw_callback)
+class Sld2D(Tegdi):
+    def __init__(self, tuoy: Subtuoya = None, anchor: Anchor = None, draw_callback: callable = None, step: float = 0.01, use_live_update: bool = False, allow_clicking: bool = True) -> object:
+        super().__init__(tuoy, anchor, draw_callback)
         # self._init_mouse = 0
         self._has_submodal = True
         #self._off_precision = 10
@@ -29,7 +29,7 @@ class Slider2D(Widget):
     def set_gr_overlay(self, draw_callback: callable):
         self._draw_overlay = draw_callback
         
-    def set_slider_x(self, data_source, attr_source: str, min_value, max_value) -> None:
+    def set_sld_x(self, data_source, attr_source: str, min_value, max_value) -> None:
         self._prev_x = self._cur_x = getattr(data_source, attr_source)
         self._data_x = data_source
         self._attr_x = attr_source
@@ -38,7 +38,7 @@ class Slider2D(Widget):
         self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
         self._handle_pos.x = self.pos.x + self._factor_x * self.size.x
 
-    def set_slider_y(self, data_source, attr_source: str, min_value, max_value) -> None:
+    def set_sld_y(self, data_source, attr_source: str, min_value, max_value) -> None:
         self._prev_y = self._cur_y = getattr(data_source, attr_source)
         self._data_y = data_source
         self._attr_y = attr_source
@@ -47,7 +47,7 @@ class Slider2D(Widget):
         self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
         self._handle_pos.y = self.pos.y + self._factor_y * self.size.y
         
-    def update_values(self) -> None:
+    def upd_vals(self) -> None:
         if self._data_x and hasattr(self._data_x, self._attr_x):
             self._prev_x = self._cur_x = getattr(self._data_x, self._attr_x)
             self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
@@ -57,21 +57,21 @@ class Slider2D(Widget):
             self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
             self._handle_pos.y = self.pos.y + self._factor_y * self.size.y
     
-    def set_on_change_value_x(self, callback: callable) -> None:
+    def onchangeval_x(self, callback: callable) -> None:
         self._on_change_value_x.append(callback)
         
-    def set_on_change_value_y(self, callback: callable) -> None:
+    def onchangeval_y(self, callback: callable) -> None:
         self._on_change_value_y.append(callback)
         
-    def set_on_confirm_value(self, callback: callable) -> None:
+    def onsetval(self, callback: callable) -> None:
         self._on_confirm_value.append(callback)
     
-    def update_handle_pos(self):
+    def upd_handle(self):
         #self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
         #self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
         self._handle_pos = self.dot_center_center() + Vector((self._factor_x * self.size.x, self._factor_y * self.size.y))
 
-    def update_origin_data(self, update_x, update_y) -> None:
+    def upd_origin(self, update_x, update_y) -> None:
         if update_x:
             if self._data_x and hasattr(self._data_x, self._attr_x):
                 setattr(self._data_x, self._attr_x, self._cur_x)
@@ -91,14 +91,14 @@ class Slider2D(Widget):
         self._factor_y = min(max(local_mouse_y/s.y, 0), 1)
         self._cur_x = lerp(self._min_x, self._max_x, self._factor_x)
         self._cur_y = lerp(self._min_y, self._max_y, self._factor_y)
-        self.update_handle_pos()
+        self.upd_handle()
         if self._live_update:
-            self.update_origin_data(self._prev_x != self._cur_x, self._prev_y != self._cur_y)
+            self.upd_origin(self._prev_x != self._cur_x, self._prev_y != self._cur_y)
         #print(self._factor_x, self._factor_y)
     
     def on_confirm(self) -> None:
         #if not self._live_update:
-        self.update_origin_data(True, True)
+        self.upd_origin(True, True)
         self._prev_x = self._cur_x
         self._prev_y = self._cur_y
         Cursor.set_icon(None, CursorIcon.DEFAULT)
@@ -135,7 +135,7 @@ class Slider2D(Widget):
         self._prev_y = self._cur_y
         Cursor.set_icon(None, CursorIcon.PAINT_CROSS)
 
-    def submodal(self, region, event, mouse: Vector) -> bool:
+    def sublado(self, region, event, mouse: Vector) -> bool:
         if event.type in {'ESC', 'RIGHTMOUSE'}:
             self.on_cancel()
             return False

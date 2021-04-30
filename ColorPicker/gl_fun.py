@@ -2,7 +2,7 @@
 from bgl import *
 from blf import *
 from gpu_extras.batch import batch_for_shader as bat
-from . gpu_shaders import ShaderType as SType, ShaderGeom as SGeom
+from . gpu_sh import ShaderType as SType, ShaderGeom as SGeom
 def SetPoint(ps):glPointSize(ps)
 def RstPoint():glPointSize(4.0)
 def SetPointBlend(ps):glPointSize(ps);SetBlend()

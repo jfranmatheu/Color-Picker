@@ -8,7 +8,7 @@ class ColorPickerWidgetPanel(Panel):
     bl_context = ".paint_common"
     bl_category = 'Paint'
 
-    bl_idname = "COLORPICKER_PT_widget"
+    bl_idname = "COLORPICKER_PT_teg"
     bl_label = "Color Picker"
 
     @classmethod

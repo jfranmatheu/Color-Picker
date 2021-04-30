@@ -1,8 +1,9 @@
+# ATTENTION!! DEPRECATED!!!!!!
 co = 'color'; op = 'o'; pos = 'pos'
 from bgl import *
 from gpu_extras.presets import *
 from gpu_extras.batch import batch_for_shader as batch
-from . gpu_shaders import ShaderType as SType,Shader2D,Shader3D,SH,ShaderGeom as SGeom
+from . gpu_sh import ShaderType as SType,Shader2D,Shader3D,SH,ShaderGeom as SGeom
 from . gl_fun import *
 def DiLNCommon(_co,s,g): BindSetSingleFloat(s,co,_co); DrawBlend(NewPrimilineBat(s,g),s)
 def DiLNsList(_co,_p,p=[], s = Shader2D.UNIFORM()):

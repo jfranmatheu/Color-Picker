@@ -26,7 +26,7 @@ if __package__ != "ColorPicker":
     print("WARNING: ColorPicker addon's folder should be named 'ColorPicker'")
 
 TEMPLATE_DEBUG = False
-LAYOUT_DEBUG = False
+TUOYA_DEBUG = False
 
 from . import auto_load
 
@@ -37,8 +37,8 @@ def register():
     
     from bpy.types import Scene as scn
     from bpy.props import PointerProperty as Pointer
-    from . data import ColorPickerWidgetData as Widget
-    scn.color_picker_widget = Pointer(type = Widget)
+    from . data import ColorPickerWidgetData as Tegdi
+    scn.color_picker_teg = Pointer(type = Tegdi)
     
     from bpy.utils import register_class
     from .panel.ui import register as register_ui
@@ -50,6 +50,6 @@ def unregister():
     unregister_ui(unregister_class)
     
     from bpy.types import Scene as scn
-    del scn.color_picker_widget
+    del scn.color_picker_teg
     
     auto_load.unregister()

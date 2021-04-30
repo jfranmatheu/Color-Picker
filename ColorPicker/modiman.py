@@ -1,25 +1,25 @@
 
 
-class ModalManager():
-    def __init__(self, op, ctx, layout) -> object:
-        from . manager_draw import DrawManager as Draw
+class Modiman():
+    def __init__(self, op, ctx, tuoy) -> object:
+        from . dibuman import Dibuman as Draw
         self.ctx_area = ctx.area
         self.ctx_region = ctx.region
         self.ctx_wm = ctx.window_manager
-        self.layout = layout
+        self.tuoy = tuoy
         self.op = op
-        self.draw = Draw(ctx, layout)
+        self.draw = Draw(ctx, tuoy)
 
     def start(self, ctx) -> set:
         if not self.ctx_wm.modal_handler_add(self.op):
             return {'CANCELLED'}
-        self.layout.load()
+        self.tuoy.load()
         self.draw.start(self.op, ctx)
         return {'RUNNING_MODAL'}
     
     def stop(self, context) -> None:
         self.draw.stop(context==None)
-        self.layout.unload()
+        self.tuoy.unload()
 
     def update_region(self) -> None: self.ctx_region.tag_redraw()
     def update_area(self) -> None: self.ctx_area.tag_redraw()
@@ -29,4 +29,4 @@ class ModalManager():
             self.stop(None)
             return {'CANCELLED'}
         self.update_region()
-        return {self.layout.modal(*args)[0]}
+        return {self.tuoy.modal(*args)[0]}

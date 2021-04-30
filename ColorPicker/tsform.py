@@ -1,7 +1,7 @@
 from . anchor import Anchor, Vector
 
 
-class Transform:
+class Tsform:
     def set_size(self, _width: int, _height: int) -> None:
         self.size = Vector((_width, _height))
 
@@ -29,15 +29,15 @@ class Transform:
     def dot_center_center(self) -> Vector:
         return self.pos - self.size / 2
 
-class TransformAnchored(Transform):
+class TsformAnch(Tsform):
     def set_anchor(self, _anchor: Anchor) -> None:
         self.anchor = _anchor
         if hasattr(self, 'parent') and _anchor:
             self.update()
 
-    def set_parent(self, parent) -> None:
-        from . layout import BaseLayout
-        if not isinstance(parent, BaseLayout):
+    def setpar(self, parent) -> None:
+        from . tuoya import Basetuoya
+        if not isinstance(parent, Basetuoya):
             return
         self.parent = parent
         if hasattr(self, 'anchor') and self.anchor and parent:
@@ -61,7 +61,7 @@ class TransformAnchored(Transform):
     def initUI(self) -> None:
         self.update()
 
-class TransformAnchoredFixed(TransformAnchored):
+class TsformAnchFixed(TsformAnch):
     def set_anchor(self, _anchor: Anchor) -> None:
         self.fixed_width = (_anchor.min.x <= 1 and _anchor.max.x > 1)
         self.fixed_height = (_anchor.min.y <= 1 and _anchor.max.y > 1)
@@ -112,7 +112,7 @@ class TransformAnchoredFixed(TransformAnchored):
         self.set_pos(xi, yi)
         self.set_size(*(anchor_max - self.pos))
 
-class TransformAdvanced(Transform):
+class TsformAdvanced(Tsform):
     def set_size(self, _width: int, _height: int) -> None:
         super().set_size(_width, _height)
         if self.margin:
@@ -158,7 +158,7 @@ class TransformAdvanced(Transform):
     def get_inner_pos_size(self) -> (Vector, Vector):
         return self.inner_pos, self.inner_size
 
-class TransformAdvancedAnchored(TransformAdvanced, TransformAnchored):
+class TsformAdvancedAnch(TsformAdvanced, TsformAnch):
     def set_margin(self, left: int, right: int, bottom: int, top: int):
         super().set_margin(left, right, bottom, top)
         self.update()
@@ -177,12 +177,12 @@ class TransformAdvancedAnchored(TransformAdvanced, TransformAnchored):
         self.update()
         return self
 
-class TransformAnchoredFixedTopBottom(TransformAnchoredFixed):
+class TsformAnchFixedTopBottom(TsformAnchFixed):
     def update(self) -> None:
         super().update()
         self.pos -= self.size
 
-class DynTransformAnchoredFixedTopBottom(TransformAnchoredFixedTopBottom):
+class DynTsformAnchFixedTopBottom(TsformAnchFixedTopBottom):
     def update(self) -> None:
         super().update()
         if self.pos.x + self.size.x > self.parent.pos.x + self.parent.size.x:

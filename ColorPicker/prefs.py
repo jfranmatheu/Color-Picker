@@ -36,22 +36,22 @@ class ColorPickerPreferences(AddonPreferences):
     screen_dpi : IntProperty(default=72, min=72, max=300, name="Screen DPI", description="The greater this value is, the greater the size of the text will be :-)")
     #slices : FloatVectorProperty(size=4, min=0, max=1, default=(0, 1, 0, 1))
     show_hex : BoolProperty(default=False, name="Show Hex", description="Show hexadecimal color code")
-    
+
     def draw(self, context):
         scn = context.scene
         layout = getattr(self,  panel_layout)
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        #widget_data = scn.color_picker_widget
-        #color_picker = widget_data.color_picker
+        #teg_data = scn.color_picker_teg
+        #color_picker = teg_data.color_picker
 
         settings = layout.column(align=True)
         header = settings.box()
         header.label(text="Settings :", icon='SETTINGS')
 
         props = settings.box()
-        
+
         if not isinstance(self, AddonPreferences):
             self = get_prefs(context)
 
@@ -73,7 +73,7 @@ class ColorPickerPreferences(AddonPreferences):
                 row = box.row()
                 row.use_property_split = False
                 row.prop(self, 'close_on_hotkey_release')
-        
+    
         else:
             props.prop(self, 'texture_size_factor',slider=True)
             props.prop(self, 'weight_size_factor', slider=True)

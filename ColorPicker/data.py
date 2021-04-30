@@ -17,7 +17,7 @@ class Modal(Enum):
 copktype = (
     ('SV_RECT', "SV Square", "Square to control Saturation and Value"),
     ('SV_H_RECT', "SV+H Square&Ring", "Square to control Saturation and Value plus a ring to control Hue"),
-    ('HS_CIRC', "HS Circle", "Circle to control Hue and Saturation plus a slider to control Value"),
+    ('HS_CIRC', "HS Circle", "Circle to control Hue and Saturation plus a sld to control Value"),
 )
 
 class ColorPicker(PropertyGroup):

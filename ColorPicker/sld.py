@@ -1,4 +1,4 @@
-from . widget import Widget, Vector, Modal, SubLayout
+from . tedgi import Tegdi, Vector, Modal, Subtuoya
 from . anchor import *
 from . utils.fun import lerp, clamp, point_inside_circle
 from enum import Enum
@@ -18,7 +18,7 @@ class SlideType(Enum):
     STEP = 1,
     OFFS = 2
 
-class Slider(Widget):
+class Sld(Tegdi):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL, allow_clicking: bool = True) -> object:
         super().__init__()
         self._prev_value = self._value = getattr(data_source, attr_source)
@@ -86,20 +86,20 @@ class Slider(Widget):
         self._direction = clamp(0, 1, dir)
         # TODO: update all the thing...
         
-    def update_value(self) -> None:
+    def upd_val(self) -> None:
         if self._data and hasattr(self._data, self._attr):
             self._prev_value = self._value = getattr(self._data, self._attr) 
 
     def set_value_type(self, _type: type) -> None:
         self._value_type = _type
     
-    def set_on_change_value(self, callback: callable) -> None:
+    def onchangeval(self, callback: callable) -> None:
         self._on_change_value_callbacks.append(callback)
         
-    def set_on_confirm_value(self, callback: callable) -> None:
+    def onsetval(self, callback: callable) -> None:
         self._on_confirm_value_callbacks.append(callback)
 
-    def update_origin_data(self) -> None:
+    def upd_origin(self) -> None:
         if self._data and hasattr(self._data, self._attr):
             setattr(self._data, self._attr, self._value)
             if self._on_change_value_callbacks:
@@ -114,7 +114,7 @@ class Slider(Widget):
     def on_sliding(self) -> None:
         self.match_value_type()
         if self._live_update and self._prev_value != self._value:
-            self.update_origin_data()
+            self.upd_origin()
 
     def slide_step(self, m_axis: int) -> None:
         dir = 1 if m_axis > self._init_mouse_axis else -1
@@ -140,7 +140,7 @@ class Slider(Widget):
         self.match_value_type()
         self._state = NONE
         #if not self._live_update:
-        self.update_origin_data()
+        self.upd_origin()
         self._prev_value = self._value
         if self._on_confirm_value_callbacks:
             for call in self._on_confirm_value_callbacks: call()
@@ -174,7 +174,7 @@ class Slider(Widget):
 
         return Modal.RUN.value
 
-    def submodal(self, region, event, mouse: Vector) -> bool:
+    def sublado(self, region, event, mouse: Vector) -> bool:
         if event.type in {'ESC', 'RIGHTMOUSE'}:
             self.on_cancel()
             return False
@@ -201,13 +201,13 @@ class Slider(Widget):
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), str(self._value), self.get_factor())
         
-class SliderHandle(Slider):
+class SldHandle(Sld):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL) -> object:
         super().__init__(data_source, attr_source, min_value, max_value, step, use_live_update, direction, slide_type)
         self._handle_pos = Vector((-1, -1))
         self._handle_radius = 5
         #self.init_handle()
-        self._was_on_hover = False
+        self._was_on_hov = False
         
     def init_handle(self):
         if self._direction == HORIZONTAL:
@@ -217,10 +217,10 @@ class SliderHandle(Slider):
             self._handle_pos.x = self.pos.x
             self._handle_pos.y = getattr(self._data, self._attr)
     
-    def snap_to_widget(self, widget: Widget, align: int, side: int, thickness: int) -> None:
+    def snap_to_teg(self, teg: Tegdi, align: int, side: int, thickness: int) -> None:
         self.set_anchor(Anchor(0, 0, 0, 0))
-        self.set_layout(widget.parent) # NOTE: was layout but changed to parent don't know why but LOL lets keep it so until it gives problems.
-        pos, size = widget.get_pos_size()
+        self.set_tuoy(teg.parent) # NOTE: was tuoy but changed to parent don't know why but LOL lets keep it so until it gives problems.
+        pos, size = teg.get_pos_size()
         if align == BOTTOM:
             self.size = Vector((size.x, thickness))
             if side == OUTER: self.pos = Vector((pos.x, pos.y - thickness))
@@ -230,37 +230,37 @@ class SliderHandle(Slider):
             if side == OUTER: self.pos = Vector((pos.x + size.x, pos.y))
             else: self.pos = Vector((pos.x + size.x - thickness, pos.y))
         #self.set_anchor(Anchor(*self.pos, *(self.pos+self.size)))
-        #self.set_layout(widget.layout)
+        #self.set_tuoy(teg.tuoy)
         self.init_handle()
         if self._direction == HORIZONTAL:
             self._handle_pos.x = int(self.size.x * self.get_factor())
         else:
             self._handle_pos.y = int(self.size.y * self.get_factor())
     
-    def on_hover(self, mouse: Vector) -> bool:
-        if not super().on_hover(mouse):
-            if self._was_on_hover:
+    def on_hov(self, mouse: Vector) -> bool:
+        if not super().on_hov(mouse):
+            if self._was_on_hov:
                 Cursor.set_icon(None, CursorIcon.DEFAULT)
-                self._was_on_hover = False
+                self._was_on_hov = False
             return False
         if self._direction == HORIZONTAL:
             p = Vector((self.pos.x + self._handle_pos.x, self.pos.y + self.size.y / 2))
         else:
             p = Vector((self.pos.x + self.size.x / 2, self.pos.y + self._handle_pos.y))
         if point_inside_circle(mouse, p, self._handle_radius):
-            self._was_on_hover = True
+            self._was_on_hov = True
             Cursor.set_icon(None, CursorIcon.MOVE_X if self._direction == HORIZONTAL else CursorIcon.MOVE_Y)
             return True
-        elif self._was_on_hover:
+        elif self._was_on_hov:
             Cursor.set_icon(None, CursorIcon.DEFAULT)
-            self._was_on_hover = False
+            self._was_on_hov = False
         return False
     
-    def on_hover_exit(self) -> None:
-        super().on_hover_exit()
-        if self._was_on_hover:
+    def on_hov_exit(self) -> None:
+        super().on_hov_exit()
+        if self._was_on_hov:
             Cursor.set_icon(None, CursorIcon.DEFAULT)
-            self._was_on_hover = False
+            self._was_on_hov = False
         
     def on_sliding(self) -> None:
         super().on_sliding()
@@ -277,7 +277,7 @@ class SliderHandle(Slider):
             else:
                 self._draw_callback(self._data, pos, size, Vector((pos.x + size.x / 2, pos.y + self._handle_pos.y)), Vector((size.x, self._handle_pos.y)), str(self._value))
 
-class SliderGraphic(Slider):
+class SldGraphic(Sld):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL) -> object:
         super().__init__(data_source, attr_source, min_value, max_value, step, use_live_update, direction, slide_type)
         self._draw_handle = None

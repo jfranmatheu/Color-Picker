@@ -1,21 +1,21 @@
-from . widget import Widget, SubLayout, Anchor, Vector, mouse_on_hover
+from . tedgi import Tegdi, Subtuoya, Anchor, Vector, mouse_on_hov
 from . tempo_memo import TempoMemo
 
 
-class RecentColors(Widget, TempoMemo):
-    def __init__(self, layout: SubLayout, anchor: Anchor, draw_callback: callable, rows: int, min_row_height: int, sep: int, data, attr: str, memo_size: int, can_remember: bool = False, id: str = '') -> object:
-        Widget.__init__(self, layout, anchor, draw_callback)
+class ColRec(Tegdi, TempoMemo):
+    def __init__(self, tuoy: Subtuoya, anchor: Anchor, draw_callback: callable, rows: int, min_row_height: int, sep: int, data, attr: str, memo_size: int, can_remember: bool = False, id: str = '') -> object:
+        Tegdi.__init__(self, tuoy, anchor, draw_callback)
         TempoMemo.__init__(self, data, attr, memo_size, can_remember, id)
         self._rows = rows
         self._min_row_height = min_row_height
         self._sep = sep
-        self._on_hover_slot_index = -1
+        self._on_hov_slot_index = -1
         self._inverted = True
         self._alignment = 'CENTER'
         self.init_color_slots()
         self._on_click_callback = []
     
-    def set_on_click_callback(self, callback: callable):
+    def set_action_callback(self, callback: callable):
         self._on_click_callback.append(callback)
         
     def init_color_slots(self):
@@ -71,27 +71,27 @@ class RecentColors(Widget, TempoMemo):
     def get_data(self):
         return getattr(self._data, self._attr).copy()
     
-    def on_hover(self, mouse) -> bool:
-        if not super().on_hover(mouse): return False
+    def on_hov(self, mouse) -> bool:
+        if not super().on_hov(mouse): return False
         i = 0
         
         for slot in self._color_slots:
-            if mouse_on_hover(mouse, slot, self._slot_size):
+            if mouse_on_hov(mouse, slot, self._slot_size):
                 if self._taken_size > i:
-                    self._on_hover_slot_index = i
+                    self._on_hov_slot_index = i
                     return True
                 return False
             i+=1
-        self._on_hover_slot_index = -1
+        self._on_hov_slot_index = -1
         return True
     
     def on_click(self):
-        if self._on_hover_slot_index != -1:
+        if self._on_hov_slot_index != -1:
             if self._inverted:
-                setattr(self._data, self._attr, self._data_blocks[self._taken_size-1-self._on_hover_slot_index])
+                setattr(self._data, self._attr, self._data_blocks[self._taken_size-1-self._on_hov_slot_index])
             else:
-                setattr(self._data, self._attr, self._data_blocks[self._on_hover_slot_index])
+                setattr(self._data, self._attr, self._data_blocks[self._on_hov_slot_index])
             for call in self._on_click_callback: call()
     
     def draw(self) -> None:
-        self._draw_callback(self._color_slots, self._slot_size, self._data_blocks, self._on_hover_slot_index)
+        self._draw_callback(self._color_slots, self._slot_size, self._data_blocks, self._on_hov_slot_index)

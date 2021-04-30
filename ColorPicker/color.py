@@ -1,18 +1,18 @@
 from mathutils import Color as C, Vector as V
-from . widget import Widget, mouse_on_hover
+from . tedgi import Tegdi, mouse_on_hov
 
-class PreviewColor(Widget):
-    def __init__(self, layout, anchor, draw_callback, data) -> object:
-        super().__init__(layout, anchor, draw_callback)
+class ColPrev(Tegdi):
+    def __init__(self, tuoy, anchor, draw_callback, data) -> object:
+        super().__init__(tuoy, anchor, draw_callback)
         self._data = data
         
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), getattr(self._data, 'color'))
 
-class PreviewColorSwitch(PreviewColor):
-    def __init__(self, layout, anchor, draw_callback, data) -> object:
-        super().__init__(layout, anchor, draw_callback, data)
-        self._on_hover_color = None
+class ColPrevSwitch(ColPrev):
+    def __init__(self, tuoy, anchor, draw_callback, data) -> object:
+        super().__init__(tuoy, anchor, draw_callback, data)
+        self._on_hov_color = None
         self._on_switch_color = []
 
     def set_on_switch_color(self, callback: callable) -> None:
@@ -21,17 +21,17 @@ class PreviewColorSwitch(PreviewColor):
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), getattr(self._data, 'color'), getattr(self._data, 'secondary_color'))
 
-    def on_hover(self, mouse) -> bool:
-        if not super().on_hover(mouse): return False
+    def on_hov(self, mouse) -> bool:
+        if not super().on_hov(mouse): return False
         half_height = self.size.y/2
-        if mouse_on_hover(mouse, self.pos, (self.size.x, half_height)):
-            self._on_hover_color = 'SECONDARY'
-        elif mouse_on_hover(mouse, self.pos+V((0, half_height)), (self.size.x, half_height)):
-            self._on_hover_color = 'MAIN'
+        if mouse_on_hov(mouse, self.pos, (self.size.x, half_height)):
+            self._on_hov_color = 'SECONDARY'
+        elif mouse_on_hov(mouse, self.pos+V((0, half_height)), (self.size.x, half_height)):
+            self._on_hov_color = 'MAIN'
         return True
 
     def on_click(self) -> None:
-        if self._on_hover_color == 'SECONDARY':
+        if self._on_hov_color == 'SECONDARY':
             prev_main_col = getattr(self._data, 'color').copy()
             prev_seco_col = getattr(self._data, 'secondary_color').copy()
             setattr(self._data, 'secondary_color', prev_main_col)
@@ -40,9 +40,9 @@ class PreviewColorSwitch(PreviewColor):
                 for call in self._on_switch_color: call()
 
 
-class PreviewColorDiff(PreviewColor):
-    def __init__(self, layout, anchor, draw_callback, data) -> object:
-        super().__init__(layout, anchor, draw_callback, data)
+class ColPrevDiff(ColPrev):
+    def __init__(self, tuoy, anchor, draw_callback, data) -> object:
+        super().__init__(tuoy, anchor, draw_callback, data)
         self._new_color = getattr(self._data, 'color')
         self._color = self._new_color.copy()
 
@@ -57,10 +57,10 @@ class PreviewColorDiff(PreviewColor):
 
 from . utils.color.conversion.rgb2hex import rgb2hex
 from . utils.clip import copy2clip
-class PreviewColorHex(PreviewColor):
-    def on_hover(self, mouse) -> bool:
-        #self._is_on_hover = mouse_on_hover(mouse, *self.get_pos_size())
-        return mouse_on_hover(mouse, *self.get_pos_size()) #self._is_on_hover
+class ColPrevHex(ColPrev):
+    def on_hov(self, mouse) -> bool:
+        #self._is_on_hov = mouse_on_hov(mouse, *self.get_pos_size())
+        return mouse_on_hov(mouse, *self.get_pos_size()) #self._is_on_hov
 
     def on_click(self) -> None:
         copy2clip(rgb2hex(*getattr(self._data, 'color')))
@@ -69,31 +69,31 @@ class PreviewColorHex(PreviewColor):
         self._draw_callback(*self.get_pos_size(), rgb2hex(*getattr(self._data, 'color')))
 
 from . utils.color import complementary, analogous, split_complementary, triadic, tetradic
-class PreviewColorComplementary(PreviewColor):
+class ColPrevComplementary(ColPrev):
     def on_click(self) -> None:
         setattr(self._data, 'color', complementary(getattr(self._data, 'color')))
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), complementary(getattr(self._data, 'color')))
 
-class PreviewColorAnalogous(PreviewColor):
+class ColPrevAnalogous(ColPrev):
     def on_click(self) -> None:
         setattr(self._data, 'color', analogous(getattr(self._data, 'color')))
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), analogous(getattr(self._data, 'color')))
 
-class PreviewColorSplitComplementary(PreviewColor):
+class ColPrevSplitComplementary(ColPrev):
     def on_click(self) -> None:
         setattr(self._data, 'color', split_complementary(getattr(self._data, 'color')))
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), split_complementary(getattr(self._data, 'color')))
 
-class PreviewColorTriadic(PreviewColor):
+class ColPrevTriadic(ColPrev):
     def on_click(self) -> None:
         setattr(self._data, 'color', triadic(getattr(self._data, 'color')))
     def draw(self) -> None:
         self._draw_callback(*self.get_pos_size(), triadic(getattr(self._data, 'color')))
    
-class PreviewColorTetradic(PreviewColor):
+class ColPrevTetradic(ColPrev):
     def on_click(self) -> None:
         setattr(self._data, 'color', tetradic(getattr(self._data, 'color')))
     def draw(self) -> None:

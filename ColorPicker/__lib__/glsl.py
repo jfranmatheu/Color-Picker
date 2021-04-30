@@ -1,3 +1,4 @@
+# ATTENTION!! DEPRECATED!!!!!!
 shader_2d_area_border_frag = '''
 uniform vec4 color;
 uniform float scale;
@@ -212,7 +213,7 @@ void main()
   gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
 }
 '''
-shader_2d_widget_base_frag = '''
+shader_2d_teg_base_frag = '''
 uniform vec3 checkerColorAndSize;
 
 noperspective in vec2 uvInterp;
@@ -299,7 +300,7 @@ void main()
   vec3 masks = compute_masks(uvInterp);
 
   if (butCo > 0.0) {
-    /* Alpha checker widget. */
+    /* Alpha checker teg. */
     if (butCo > 0.5) {
       vec4 checker = do_checkerboard();
       fragColor = mix(checker, innerColor, innerColor.a);
@@ -326,7 +327,7 @@ void main()
   fragColor = blender_srgb_to_framebuffer_space(fragColor);
 }
 '''
-shader_2d_widget_base_vert = '''
+shader_2d_teg_base_vert = '''
 
 uniform mat4 ModelViewProjectionMatrix;
 
@@ -342,29 +343,29 @@ uniform vec4 parameters[MAX_PARAM];
  * to be violated in some drivers. For example, macOS 10.15.4 and Intel Iris
  * causes T78307 when using gl_InstanceID outside of instance. */
 #ifdef USE_INSTANCE
-#  define widgetID gl_InstanceID
+#  define tegID gl_InstanceID
 #else
-#  define widgetID 0
+#  define tegID 0
 #endif
 
-#define recti parameters[widgetID * MAX_PARAM + 0]
-#define rect parameters[widgetID * MAX_PARAM + 1]
-#define radsi parameters[widgetID * MAX_PARAM + 2].x
-#define rads parameters[widgetID * MAX_PARAM + 2].y
-#define faci parameters[widgetID * MAX_PARAM + 2].zw
-#define roundCorners parameters[widgetID * MAX_PARAM + 3]
-#define colorInner1 parameters[widgetID * MAX_PARAM + 4]
-#define colorInner2 parameters[widgetID * MAX_PARAM + 5]
-#define colorEdge parameters[widgetID * MAX_PARAM + 6]
-#define colorEmboss parameters[widgetID * MAX_PARAM + 7]
-#define colorTria parameters[widgetID * MAX_PARAM + 8]
-#define tria1Center parameters[widgetID * MAX_PARAM + 9].xy
-#define tria2Center parameters[widgetID * MAX_PARAM + 9].zw
-#define tria1Size parameters[widgetID * MAX_PARAM + 10].x
-#define tria2Size parameters[widgetID * MAX_PARAM + 10].y
-#define shadeDir parameters[widgetID * MAX_PARAM + 10].z
-#define alphaDiscard parameters[widgetID * MAX_PARAM + 10].w
-#define triaType parameters[widgetID * MAX_PARAM + 11].x
+#define recti parameters[tegID * MAX_PARAM + 0]
+#define rect parameters[tegID * MAX_PARAM + 1]
+#define radsi parameters[tegID * MAX_PARAM + 2].x
+#define rads parameters[tegID * MAX_PARAM + 2].y
+#define faci parameters[tegID * MAX_PARAM + 2].zw
+#define roundCorners parameters[tegID * MAX_PARAM + 3]
+#define colorInner1 parameters[tegID * MAX_PARAM + 4]
+#define colorInner2 parameters[tegID * MAX_PARAM + 5]
+#define colorEdge parameters[tegID * MAX_PARAM + 6]
+#define colorEmboss parameters[tegID * MAX_PARAM + 7]
+#define colorTria parameters[tegID * MAX_PARAM + 8]
+#define tria1Center parameters[tegID * MAX_PARAM + 9].xy
+#define tria2Center parameters[tegID * MAX_PARAM + 9].zw
+#define tria1Size parameters[tegID * MAX_PARAM + 10].x
+#define tria2Size parameters[tegID * MAX_PARAM + 10].y
+#define shadeDir parameters[tegID * MAX_PARAM + 10].z
+#define alphaDiscard parameters[tegID * MAX_PARAM + 10].w
+#define triaType parameters[tegID * MAX_PARAM + 11].x
 
 /* We encode alpha check and discard factor together. */
 #define doAlphaCheck (alphaDiscard < 0.0)
@@ -384,7 +385,7 @@ flat out float discardFac;
 in float dummy;
 #endif
 
-vec2 do_widget(void)
+vec2 do_teg(void)
 {
   lineWidth = abs(rect.x - recti.x);
   vec2 emboss_ofs = vec2(0.0, -lineWidth);
@@ -430,7 +431,7 @@ vec2 do_tria()
   vec2 point_pos[4] = vec2[4](vec2(-1.0, -1.0), vec2(-1.0, 1.0), vec2(1.0, -1.0), vec2(1.0, 1.0));
   vec2 point_uvs[4] = vec2[4](vec2(0.0, 0.0), vec2(0.0, 1.0), vec2(1.0, 0.0), vec2(1.0, 1.0));
 
-  /* We reuse the SDF roundbox rendering of widget to render the tria shapes.
+  /* We reuse the SDF roundbox rendering of teg to render the tria shapes.
    * This means we do clever tricks to position the rectangle the way we want using
    * the 2 triangles uvs. */
   if (triaType == 0.0) {
@@ -513,12 +514,12 @@ void main()
 {
   discardFac = discardFactor;
   bool is_tria = (gl_VertexID > 3);
-  vec2 pos = (is_tria) ? do_tria() : do_widget();
+  vec2 pos = (is_tria) ? do_tria() : do_teg();
 
   gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
 }
 '''
-shader_2d_widget_shadow_frag = '''
+shader_2d_teg_shadow_frag = '''
 in float shadowFalloff;
 
 out vec4 fragColor;
@@ -532,7 +533,7 @@ void main()
   fragColor.a = alpha * (shadowFalloff * shadowFalloff * 0.722 + shadowFalloff * 0.277);
 }
 '''
-shader_2d_widget_shadow_vert = '''
+shader_2d_teg_shadow_vert = '''
 #define BIT_RANGE(x) uint((1 << x) - 1)
 
 /* 2 bits for corner */

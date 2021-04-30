@@ -1,13 +1,13 @@
 
 
 
-class DrawManager():
-    def __init__(self, ctx, layout) -> object: # callback: callable,
+class Dibuman():
+    def __init__(self, ctx, tuoy) -> object: # callback: callable,
         self.ctx_area = ctx.area
         self.ctx_region = ctx.region
         self.ctx_space = ctx.space_data
         # self.draw = callback 
-        self.layout = layout
+        self.tuoy = tuoy
 
     def start(self, op, ctx) -> object:
         self._handler = self.ctx_space.draw_handler_add(self, (op, ctx), 'WINDOW', 'POST_PIXEL')
@@ -30,4 +30,4 @@ class DrawManager():
     def update_area(self) -> None: self.ctx_area.tag_redraw()
 
     def __call__(self, arg1, arg2) -> None:
-        self.layout.draw(self, arg1, arg2)
+        self.tuoy.draw(self, arg1, arg2)

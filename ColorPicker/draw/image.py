@@ -1,5 +1,6 @@
+# ATTENTION!! DEPRECATED!!!!!!
 from .. gl_fun import bat, DrawBlend, Bind
-from .. gpu_shaders import Shader2D, ShaderType
+from .. gpu_sh import Shader2D, ShaderType
 from bgl import glActiveTexture, glBindTexture, GL_TEXTURE_2D, GL_TEXTURE0
 
 
