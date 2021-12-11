@@ -13,10 +13,12 @@ TYPING = 3
 HORIZONTAL = 0
 VERTICAL = 1
 
+
 class SlideType(Enum):
     REAL = 0,
     STEP = 1,
     OFFS = 2
+
 
 class Sld(Tegdi):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL, allow_clicking: bool = True) -> object:
@@ -40,21 +42,21 @@ class Sld(Tegdi):
         self._on_confirm_value_callbacks = []
         self._direction = direction
         self._allow_clicking = allow_clicking
-    
+
     @property
     def min_value(self):
         if self._min_value_dynamic:
             data, attr, off = self._min_value_dynamic
             return getattr(data, attr) + off
         return self._min_value
-    
+
     @property
     def max_value(self):
         if self._max_value_dynamic:
             data, attr, off = self._max_value_dynamic
             return getattr(data, attr) + off
         return self._max_value
-    
+
     @min_value.setter
     def min_value(self, min_value):
         if isinstance(min_value, (int, float)):
@@ -64,7 +66,7 @@ class Sld(Tegdi):
             data, attr, off = min_value
             self._min_value = getattr(data, attr)
             self._min_value_dynamic = min_value
-            
+
     @max_value.setter
     def max_value(self, max_value):
         if isinstance(max_value, (int, float)):
@@ -85,25 +87,26 @@ class Sld(Tegdi):
     def set_direction(self, dir: int) -> None:
         self._direction = clamp(0, 1, dir)
         # TODO: update all the thing...
-        
+
     def upd_val(self) -> None:
         if self._data and hasattr(self._data, self._attr):
-            self._prev_value = self._value = getattr(self._data, self._attr) 
+            self._prev_value = self._value = getattr(self._data, self._attr)
 
     def set_value_type(self, _type: type) -> None:
         self._value_type = _type
-    
-    def onchangeval(self, callback: callable) -> None:
+
+    def onechanval(self, callback: callable) -> None:
         self._on_change_value_callbacks.append(callback)
-        
-    def onsetval(self, callback: callable) -> None:
+
+    def onestval(self, callback: callable) -> None:
         self._on_confirm_value_callbacks.append(callback)
 
     def upd_origin(self) -> None:
         if self._data and hasattr(self._data, self._attr):
             setattr(self._data, self._attr, self._value)
             if self._on_change_value_callbacks:
-                for callback in self._on_change_value_callbacks: callback()
+                for callback in self._on_change_value_callbacks:
+                    callback()
 
     def match_value_type(self) -> None:
         if self._value_type == int:
@@ -139,11 +142,12 @@ class Sld(Tegdi):
     def on_confirm(self) -> None:
         self.match_value_type()
         self._state = NONE
-        #if not self._live_update:
+        # if not self._live_update:
         self.upd_origin()
         self._prev_value = self._value
         if self._on_confirm_value_callbacks:
-            for call in self._on_confirm_value_callbacks: call()
+            for call in self._on_confirm_value_callbacks:
+                call()
 
     def on_cancel(self) -> None:
         self._value = self._prev_value
@@ -167,7 +171,7 @@ class Sld(Tegdi):
                 return Modal.RUN.value
         elif event_type == 'LEFTMOUSE' and event_value == 'PRESS':
             self._state = PRESSED
-            
+
             self._init_mouse_axis = mouse.x if self._direction == HORIZONTAL else mouse.y
             self._prev_value = self._value
             self.on_click()
@@ -181,34 +185,41 @@ class Sld(Tegdi):
         elif event.type == 'MOUSEMOVE':
             self._state = SLIDING
             if self._slide_type == SlideType.REAL:
-                self.slide_real(mouse.x if self._direction == HORIZONTAL else mouse.y)
+                self.slide_real(mouse.x if self._direction ==
+                                HORIZONTAL else mouse.y)
             elif self._slide_type == SlideType.STEP:
-                self.slide_step(mouse.x if self._direction == HORIZONTAL else mouse.y)
+                self.slide_step(mouse.x if self._direction ==
+                                HORIZONTAL else mouse.y)
             elif self._slide_type == SlideType.OFFS:
-                self.slide_off(mouse.x if self._direction == HORIZONTAL else mouse.y)
+                self.slide_off(mouse.x if self._direction ==
+                               HORIZONTAL else mouse.y)
             return True
         elif event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
             if self._state == SLIDING:
                 self.on_confirm()
             else:
                 if self._allow_clicking:
-                    self.slide_real(mouse.x if self._direction == HORIZONTAL else mouse.y)
+                    self.slide_real(mouse.x if self._direction ==
+                                    HORIZONTAL else mouse.y)
                     self.on_confirm()
                 self._state = NONE
             return False
         return True
-    
+
     def draw(self) -> None:
-        self._draw_callback(*self.get_pos_size(), str(self._value), self.get_factor())
-        
+        self._draw_callback(*self.get_pos_size(),
+                            str(self._value), self.get_factor())
+
+
 class SldHandle(Sld):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL) -> object:
-        super().__init__(data_source, attr_source, min_value, max_value, step, use_live_update, direction, slide_type)
+        super().__init__(data_source, attr_source, min_value,
+                         max_value, step, use_live_update, direction, slide_type)
         self._handle_pos = Vector((-1, -1))
         self._handle_radius = 5
-        #self.init_handle()
+        # self.init_handle()
         self._was_on_hov = False
-        
+
     def init_handle(self):
         if self._direction == HORIZONTAL:
             self._handle_pos.x = getattr(self._data, self._attr)
@@ -216,27 +227,32 @@ class SldHandle(Sld):
         else:
             self._handle_pos.x = self.pos.x
             self._handle_pos.y = getattr(self._data, self._attr)
-    
+
     def snap_to_teg(self, teg: Tegdi, align: int, side: int, thickness: int) -> None:
         self.set_anchor(Anchor(0, 0, 0, 0))
-        self.set_tuoy(teg.parent) # NOTE: was tuoy but changed to parent don't know why but LOL lets keep it so until it gives problems.
+        # NOTE: was tuoy but changed to parent don't know why but LOL lets keep it so until it gives problems.
+        self.set_tuoy(teg.parent)
         pos, size = teg.get_pos_size()
         if align == BOTTOM:
             self.size = Vector((size.x, thickness))
-            if side == OUTER: self.pos = Vector((pos.x, pos.y - thickness))
-            else: self.pos = Vector((pos.x, pos.y))
+            if side == OUTER:
+                self.pos = Vector((pos.x, pos.y - thickness))
+            else:
+                self.pos = Vector((pos.x, pos.y))
         elif align == RIGHT:
             self.size = Vector((thickness, size.y))
-            if side == OUTER: self.pos = Vector((pos.x + size.x, pos.y))
-            else: self.pos = Vector((pos.x + size.x - thickness, pos.y))
+            if side == OUTER:
+                self.pos = Vector((pos.x + size.x, pos.y))
+            else:
+                self.pos = Vector((pos.x + size.x - thickness, pos.y))
         #self.set_anchor(Anchor(*self.pos, *(self.pos+self.size)))
-        #self.set_tuoy(teg.tuoy)
+        # self.set_tuoy(teg.tuoy)
         self.init_handle()
         if self._direction == HORIZONTAL:
             self._handle_pos.x = int(self.size.x * self.get_factor())
         else:
             self._handle_pos.y = int(self.size.y * self.get_factor())
-    
+
     def on_hov(self, mouse: Vector) -> bool:
         if not super().on_hov(mouse):
             if self._was_on_hov:
@@ -244,24 +260,27 @@ class SldHandle(Sld):
                 self._was_on_hov = False
             return False
         if self._direction == HORIZONTAL:
-            p = Vector((self.pos.x + self._handle_pos.x, self.pos.y + self.size.y / 2))
+            p = Vector((self.pos.x + self._handle_pos.x,
+                       self.pos.y + self.size.y / 2))
         else:
-            p = Vector((self.pos.x + self.size.x / 2, self.pos.y + self._handle_pos.y))
+            p = Vector((self.pos.x + self.size.x / 2,
+                       self.pos.y + self._handle_pos.y))
         if point_inside_circle(mouse, p, self._handle_radius):
             self._was_on_hov = True
-            Cursor.set_icon(None, CursorIcon.MOVE_X if self._direction == HORIZONTAL else CursorIcon.MOVE_Y)
+            Cursor.set_icon(None, CursorIcon.MOVE_X if self._direction ==
+                            HORIZONTAL else CursorIcon.MOVE_Y)
             return True
         elif self._was_on_hov:
             Cursor.set_icon(None, CursorIcon.DEFAULT)
             self._was_on_hov = False
         return False
-    
+
     def on_hov_exit(self) -> None:
         super().on_hov_exit()
         if self._was_on_hov:
             Cursor.set_icon(None, CursorIcon.DEFAULT)
             self._was_on_hov = False
-        
+
     def on_sliding(self) -> None:
         super().on_sliding()
         if self._direction == HORIZONTAL:
@@ -273,13 +292,17 @@ class SldHandle(Sld):
         pos, size = self.get_pos_size()
         if self._draw_callback:
             if self._direction == HORIZONTAL:
-                self._draw_callback(self._data, pos, size, Vector((pos.x + self._handle_pos.x, pos.y + size.y / 2)), Vector((self._handle_pos.x, size.y)), str(self._value))
+                self._draw_callback(self._data, pos, size, Vector(
+                    (pos.x + self._handle_pos.x, pos.y + size.y / 2)), Vector((self._handle_pos.x, size.y)), str(self._value))
             else:
-                self._draw_callback(self._data, pos, size, Vector((pos.x + size.x / 2, pos.y + self._handle_pos.y)), Vector((size.x, self._handle_pos.y)), str(self._value))
+                self._draw_callback(self._data, pos, size, Vector(
+                    (pos.x + size.x / 2, pos.y + self._handle_pos.y)), Vector((size.x, self._handle_pos.y)), str(self._value))
+
 
 class SldGraphic(Sld):
     def __init__(self, data_source, attr_source: str, min_value, max_value, step, use_live_update: bool = False, direction: int = HORIZONTAL, slide_type: SlideType = SlideType.REAL) -> object:
-        super().__init__(data_source, attr_source, min_value, max_value, step, use_live_update, direction, slide_type)
+        super().__init__(data_source, attr_source, min_value,
+                         max_value, step, use_live_update, direction, slide_type)
         self._draw_handle = None
         self._draw_bg = None
         self._draw_fill = None
@@ -304,7 +327,8 @@ class SldGraphic(Sld):
         else:
             handle = int(size.y * self.get_factor())
         if self._draw_callback:
-            self._draw_callback(self._data, pos, size, Vector((pos.x + handle, pos.y + size.y / 2)), Vector((handle, size.y)), str(self._value))
+            self._draw_callback(self._data, pos, size, Vector(
+                (pos.x + handle, pos.y + size.y / 2)), Vector((handle, size.y)), str(self._value))
             return
         if self._draw_bg:
             self._draw_bg(pos, size)
@@ -315,8 +339,11 @@ class SldGraphic(Sld):
                 self._draw_fill(pos, Vector((handle, size.x)))
         if self._draw_handle:
             if self._direction == HORIZONTAL:
-                self._draw_handle(Vector((pos.x + handle, pos.y + size.y / 2)), size.y)
+                self._draw_handle(
+                    Vector((pos.x + handle, pos.y + size.y / 2)), size.y)
             else:
-                self._draw_handle(Vector((pos.x + size.y / 2, pos.y + handle)), size.x)
+                self._draw_handle(
+                    Vector((pos.x + size.y / 2, pos.y + handle)), size.x)
         if self._draw_overlay:
-            self._draw_overlay(pos, size, str(self._value), str(self.min_value), str(self.max_value))
+            self._draw_overlay(pos, size, str(self._value), str(
+                self.min_value), str(self.max_value))

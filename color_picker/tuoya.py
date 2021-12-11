@@ -26,12 +26,13 @@ class Basetuoya:
     def set_return_modal(self, modal_return: Modal):
         self.return_modal = modal_return
 
-    def set_draw_callback(self, callback: callable) -> None:
+    def stdibucalba(self, callback: callable) -> None:
         self.draw_callback = callback
 
-    def set_action_callback(self, function: callable, *args) -> None:
+    def set_act_back(self, function: callable, *args) -> None:
         self.on_click_callback = function
-        if args: self.args = args
+        if args:
+            self.args = args
 
     def set_on_load_unload_callbacks(self, on_load: callable, on_unload: callable) -> None:
         self.on_load_callback = on_load
@@ -111,6 +112,7 @@ class Basetuoya:
         for child in self.children:
             child.draw()
 
+
 class Tuoya(Basetuoya, TsformAdvanced):
     def __init__(self) -> object:
         if TUOYA_DEBUG:
@@ -131,16 +133,18 @@ class Tuoya(Basetuoya, TsformAdvanced):
                 self.sublado = None
             return self.return_modal.value
         return super().modal(context.region, event.type, event.value, Tuoya.get_mouse_pos(event))
-    
+
     def draw(self, draw, op, ctx) -> None:
-        if draw.ctx_area != ctx.area: return
+        if draw.ctx_area != ctx.area:
+            return
         super().draw()
 
+
 class Subtuoya(Basetuoya, TsformAdvancedAnch):
-    def __init__(self, parent, anchor: Anchor) -> object: # : Tuoya
+    def __init__(self, parent, anchor: Anchor) -> object:  # : Tuoya
         if TUOYA_DEBUG:
             print("Subtuoya::__init__ ->", self)
-        #super().__init__()
+        # super().__init__()
         super(Subtuoya, self).__init__()
         if parent and isinstance(parent, Basetuoya):
             parent.add_child(self)
@@ -168,14 +172,14 @@ class Subtuoya(Basetuoya, TsformAdvancedAnch):
         self.tegs.append(teg)
         if TUOYA_DEBUG:
             print("Basetuoya::add_teg ->", teg)
-    
+
     def rem_teg(self, teg) -> None:
         from . tedgi import Tegdi
         if not teg or not isinstance(teg, Tegdi):
             print("Subtuoya::rem_teg -> No Tegdi Instance")
             return
         self.tegs.remove(teg)
-    
+
     def revert_tegs_order(self) -> None:
         self.tegs = self.tegs.reverse()
 
@@ -193,9 +197,10 @@ class Subtuoya(Basetuoya, TsformAdvancedAnch):
             if teg.on_hov(mouse):
                 return teg
         child = super().on_hov_ch(mouse)
-        if child: return child
+        if child:
+            return child
         return None
-    
+
     def draw(self) -> None:
         if self.draw_callback:
             self.draw_callback(self)

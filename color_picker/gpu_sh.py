@@ -49,7 +49,7 @@ class ShaderName3D(Enum):
 
     def __call__(self):
         return self.value
-from .__lib__.glsl import *
+from .__lib__ import *
 shader_3d_color_unif    = from_builtin(ShaderName3D.UNIFORM())
 shader_3d_color_flat    = from_builtin(ShaderName3D.FLAT())
 shader_3d_color_smooth  = from_builtin(ShaderName3D.SMOOTH())

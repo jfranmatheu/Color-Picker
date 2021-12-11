@@ -4,38 +4,32 @@ from . data import copktype
 from . km import get_keyitem, get_keyitem_mode, modes
 panel_layout = "lay" + "out"
 
+
 def get_prefs(context):
     return context.preferences.addons[__package__].preferences
 
+
 class ColorPickerPreferences(AddonPreferences):
     bl_idname = __package__
-    
-    size_mode : EnumProperty(
-        items=(
-            ('AUTO', "Automatic", ""),
-            ('MANUAL', "Manual", "")
-        ),
-        default='MANUAL',
-        name="Mode"
-    )
 
-    texture_size_factor : FloatVectorProperty(name="Texture Paint Size Factor", subtype='XYZ', size=2, min=0.2, max=1, default=(.5, .35)) # .8, .45 to follow 16:9 ratio.
-    vertex_size_factor : FloatVectorProperty(name="Vertex Paint Size Factor", subtype='XYZ', size=2, min=0.2, max=1, default=(.5, .35))
-    weight_size_factor : FloatVectorProperty(name="Weight Paint Size Factor", subtype='XYZ', size=2, min=0.2, max=1, default=(.36, .12))
-    close_on_hotkey_release : BoolProperty(default=True, name="Close on Hot-key Release")
-    
-    is_dirty : BoolProperty(default=False)
-    
-    color_picker_type : EnumProperty(
+    close_on_hotkey_release: BoolProperty(
+        default=True, name="Close on Hot-key Release")
+
+    is_dirty: BoolProperty(default=False)
+
+    color_picker_type: EnumProperty(
         items=copktype,
         default='SV_RECT',
         name="Color Picker Type"
     )
-    color_picker_use_slice : BoolProperty(default=False, name="Slice Color Picker")
-    
-    screen_dpi : IntProperty(default=72, min=72, max=300, name="Screen DPI", description="The greater this value is, the greater the size of the text will be :-)")
+    color_picker_use_slice: BoolProperty(
+        default=False, name="Slice Color Picker")
+
+    screen_dpi: IntProperty(default=72, min=72, max=300, name="Screen DPI",
+                            description="The greater this value is, the greater the size of the text and widget will be :-)")
     #slices : FloatVectorProperty(size=4, min=0, max=1, default=(0, 1, 0, 1))
-    show_hex : BoolProperty(default=False, name="Show Hex", description="Show hexadecimal color code")
+    show_hex: BoolProperty(default=False, name="Show Hex",
+                           description="Show hexadecimal color code")
 
     def draw(self, context):
         scn = context.scene
@@ -55,7 +49,8 @@ class ColorPickerPreferences(AddonPreferences):
         if not isinstance(self, AddonPreferences):
             self = get_prefs(context)
 
-            props.prop(self, 'texture_size_factor' if context.mode == 'PAINT_TEXTURE' else 'weight_size_factor' if context.mode == 'PAINT_WEIGHT' else 'vertex_size_factor', slider=True)
+            # props.prop(self, 'texture_size_factor' if context.mode == 'PAINT_TEXTURE' else 'weight_size_factor' if context.mode ==
+            #            'PAINT_WEIGHT' else 'vertex_size_factor', slider=True)
             if context.mode != 'PAINT_WEIGHT':
                 props.prop(self, 'color_picker_type')
 
@@ -73,17 +68,18 @@ class ColorPickerPreferences(AddonPreferences):
                 row = box.row()
                 row.use_property_split = False
                 row.prop(self, 'close_on_hotkey_release')
-    
+
         else:
-            props.prop(self, 'texture_size_factor',slider=True)
-            props.prop(self, 'weight_size_factor', slider=True)
-            props.prop(self, 'vertex_size_factor', slider=True)
+            props.prop(self, 'scale', slider=True)
+           # props.prop(self, 'texture_size_factor', slider=True)
+           # props.prop(self, 'weight_size_factor', slider=True)
+           # props.prop(self, 'vertex_size_factor', slider=True)
 
             props.prop(self, 'color_picker_type')
 
             box = settings.box()
             box.label(text="Keymap :")
-            
+
             for mode in modes:
                 kmi = get_keyitem_mode(context, mode)
                 if kmi:
@@ -97,6 +93,6 @@ class ColorPickerPreferences(AddonPreferences):
             row = box.row()
             row.use_property_split = False
             row.prop(self, 'close_on_hotkey_release')
-        
+
         props.prop(self, 'screen_dpi', text="Screen DPI")
         props.prop(self, 'show_hex')

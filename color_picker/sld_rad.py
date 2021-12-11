@@ -17,12 +17,13 @@ class SldRad(Tegdi):
         self._allow_clicking = allow_clicking
 
     def set_sld_ang(self, data_source, attr_source: str, min_value, max_value) -> None:
-        self._prev_angle = self._cur_angle = 1 - getattr(data_source, attr_source)
+        self._prev_angle = self._cur_angle = 1 - \
+            getattr(data_source, attr_source)
         self._data_angle = data_source
         self._attr_angle = attr_source
         self._min_angle = min_value
         self._max_angle = max_value
-        
+
         self.upd_handle()
 
     def set_sld_dist(self, data_source, attr_source: str, min_value, max_value) -> None:
@@ -36,27 +37,31 @@ class SldRad(Tegdi):
 
     def upd_vals(self) -> None:
         if hasattr(self, '_data_angle'):
-            self._prev_angle = self._cur_angle = 1 - getattr(self._data_angle, self._attr_angle)
+            self._prev_angle = self._cur_angle = 1 - \
+                getattr(self._data_angle, self._attr_angle)
         if hasattr(self, '_data_dist'):
-            self._prev_dist = self._cur_dist = getattr(self._data_dist, self._attr_dist)
+            self._prev_dist = self._cur_dist = getattr(
+                self._data_dist, self._attr_dist)
         self.upd_handle()
 
-    def onchangeval(self, callback: callable) -> None:
+    def onechanval(self, callback: callable) -> None:
         self._on_change_value.append(callback)
 
-    def onsetval(self, callback: callable) -> None:
+    def onestval(self, callback: callable) -> None:
         self._on_confirm_value.append(callback)
 
     def upd_handle(self):
         if not hasattr(self, '_data_angle') or not hasattr(self, '_data_dist'):
             return
 
-        factor_angle = (self._cur_angle - self._min_angle) / (self._max_angle - self._min_angle)
+        factor_angle = (self._cur_angle - self._min_angle) / \
+            (self._max_angle - self._min_angle)
         angle = factor_angle * 360
         radians = rad(angle)
 
         radius = self.size.x / 2
-        factor_distance = (self._cur_dist - self._min_dist) / (self._max_dist - self._min_dist)
+        factor_distance = (self._cur_dist - self._min_dist) / \
+            (self._max_dist - self._min_dist)
         distance = factor_distance * radius
 
         off_x = cos(radians) * distance
@@ -68,14 +73,15 @@ class SldRad(Tegdi):
             setattr(self._data_angle, self._attr_angle, 1-self._cur_angle)
         if self._data_dist and hasattr(self._data_dist, self._attr_dist):
             setattr(self._data_dist, self._attr_dist, self._cur_dist)
-        
-        for callback in self._on_change_value: callback()
+
+        for callback in self._on_change_value:
+            callback()
 
     def on_slide(self, m: Vector) -> None:
-        c = self.dot_center_center() 
+        c = self.dot_center_center()
         local_mouse = Vector((m.x - c.x, m.y - c.y))
         radius = self.size.x/2
-        
+
         factor_distance = clamp(0, 1, distance_between(m, c) / radius)
         if factor_distance < 0.0001 or local_mouse == Vector((0, 0)) or m == c:
             self._handle_pos = c
@@ -86,12 +92,12 @@ class SldRad(Tegdi):
 
         v1 = Vector((1, 0))
         v2 = Vector((
-            clamp( -1, 1, local_mouse.x / radius ),
-            clamp( -1, 1, local_mouse.y / radius )
+            clamp(-1, 1, local_mouse.x / radius),
+            clamp(-1, 1, local_mouse.y / radius)
         ))
-        
+
         _angle = angle(v1, v2)
-        
+
         if v2.y < 0:
             diff = pi*2 - (_angle + pi)
             _angle = pi + diff
@@ -99,18 +105,19 @@ class SldRad(Tegdi):
         factor_angle = clamp(0, 1, _angle / pi/2)
 
         self._cur_angle = lerp(self._min_angle, self._max_angle, factor_angle)
-        
+
         self.upd_handle()
         if self._live_update:
             self.upd_origin()
-    
+
     def on_confirm(self) -> None:
         self.upd_origin()
         self._prev_angle = self._cur_angle
         self._prev_dist = self._cur_dist
         Cursor.set_icon(None, CursorIcon.DEFAULT)
         if self._on_confirm_value:
-            for call in self._on_confirm_value: call()
+            for call in self._on_confirm_value:
+                call()
 
     def on_cancel(self) -> None:
         self._cur_angle = self._prev_angle
@@ -121,7 +128,8 @@ class SldRad(Tegdi):
         self.upd_origin()
 
     def modal(self, region, event_type: str, event_value: str, mouse: Vector) -> str:
-        if event_type == 'LEFTMOUSE' and event_value == 'PRESS': self.on_click()
+        if event_type == 'LEFTMOUSE' and event_value == 'PRESS':
+            self.on_click()
         return Modal.RUN.value
 
     def on_click(self) -> None:
@@ -152,7 +160,7 @@ class SldRad(Tegdi):
         if not self._draw_callback:
             return
         self._draw_callback(*self.get_pos_size(), self._handle_pos)
-        
+
     def on_hov(self, mouse):
         return point_inside_circle(mouse, self.dot_center_center(), self.size.x/2)
 
@@ -161,10 +169,11 @@ class SldRadDot(SldRad):
     def draw(self) -> None:
         if not self._draw_callback:
             return
-        self._draw_callback(self.dot_center_center(), self.size.x/2, self._handle_pos)
-    
-    def onchangeval_x(self, callback: callable) -> None:
-        self.onchangeval(callback)
-        
-    def onchangeval_y(self, callback: callable) -> None:
-        self.onchangeval(callback)
+        self._draw_callback(self.dot_center_center(),
+                            self.size.x/2, self._handle_pos)
+
+    def onechanval_x(self, callback: callable) -> None:
+        self.onechanval(callback)
+
+    def onechanval_y(self, callback: callable) -> None:
+        self.onechanval(callback)

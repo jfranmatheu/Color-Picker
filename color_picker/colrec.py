@@ -14,17 +14,17 @@ class ColRec(Tegdi, TempoMemo):
         self._alignment = 'CENTER'
         self.init_color_slots()
         self._on_click_callback = []
-    
-    def set_action_callback(self, callback: callable):
+
+    def set_act_back(self, callback: callable):
         self._on_click_callback.append(callback)
-        
+
     def init_color_slots(self):
         self._color_slots = []
         slot_size = 10
         pos, size = self.get_pos_size()
 
         height = size.y
-        
+
         if self._memo_size != 0:
             slots_per_row = self._memo_size / self._rows
         if size.y <= self._min_row_height:
@@ -39,15 +39,15 @@ class ColRec(Tegdi, TempoMemo):
             slots_per_row = self._memo_size / self._rows
             if self._rows == 1:
                 slot_height = size.y
-        
+
         from math import floor
         # Real number of slots per row with fixed height.
-        slots_per_row = floor( size.x / slot_height )
-        
+        slots_per_row = floor(size.x / slot_height)
+
         if self._memo_size == 0:
-            self._memo_size = slots_per_row * self._rows + 1 # NOTE.
-        
-        row_index = self._rows-1 # 0
+            self._memo_size = slots_per_row * self._rows + 1  # NOTE.
+
+        row_index = self._rows-1  # 0
         col_index = 0
         x0 = pos.x
         y0 = pos.y
@@ -65,33 +65,38 @@ class ColRec(Tegdi, TempoMemo):
             else:
                 col_index += 1
             self._color_slots.append((x, y))
-        
+
         self._slot_size = [slot_height-self._sep]*2
-        
+
     def get_data(self):
         return getattr(self._data, self._attr).copy()
-    
+
     def on_hov(self, mouse) -> bool:
-        if not super().on_hov(mouse): return False
+        if not super().on_hov(mouse):
+            return False
         i = 0
-        
+
         for slot in self._color_slots:
             if mouse_on_hov(mouse, slot, self._slot_size):
                 if self._taken_size > i:
                     self._on_hov_slot_index = i
                     return True
                 return False
-            i+=1
+            i += 1
         self._on_hov_slot_index = -1
         return True
-    
+
     def on_click(self):
         if self._on_hov_slot_index != -1:
             if self._inverted:
-                setattr(self._data, self._attr, self._data_blocks[self._taken_size-1-self._on_hov_slot_index])
+                setattr(self._data, self._attr,
+                        self._data_blocks[self._taken_size-1-self._on_hov_slot_index])
             else:
-                setattr(self._data, self._attr, self._data_blocks[self._on_hov_slot_index])
-            for call in self._on_click_callback: call()
-    
+                setattr(self._data, self._attr,
+                        self._data_blocks[self._on_hov_slot_index])
+            for call in self._on_click_callback:
+                call()
+
     def draw(self) -> None:
-        self._draw_callback(self._color_slots, self._slot_size, self._data_blocks, self._on_hov_slot_index)
+        self._draw_callback(self._color_slots, self._slot_size,
+                            self._data_blocks, self._on_hov_slot_index)

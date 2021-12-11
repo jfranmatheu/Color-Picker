@@ -16,7 +16,7 @@ class Tegdi(TsformAnchFixed):
         self._draw_callback = draw_callback
         self._on_click_callback = None
         self._args = None
-        #if anchor and tuoy:
+        # if anchor and tuoy:
         #    self.update()
         self._is_on_hov = False
         self._has_submodal = False
@@ -39,11 +39,11 @@ class Tegdi(TsformAnchFixed):
     def setpar(self, parent) -> None:
         self.set_tuoy(parent)
 
-    def set_draw_callback(self, draw_callback: callable) -> object:
+    def stdibucalba(self, draw_callback: callable) -> object:
         self._draw_callback = draw_callback
         return self
 
-    def set_action_callback(self, on_click_callback: callable = None, *args) -> object:
+    def set_act_back(self, on_click_callback: callable = None, *args) -> object:
         self._on_click_callback = on_click_callback
         self._args = args if args else None
         return self
@@ -64,7 +64,8 @@ class Tegdi(TsformAnchFixed):
             self._on_click_callback()
 
     def modal(self, region, event_type: str, event_value: str, mouse: Vector) -> str:
-        if event_type == 'LEFTMOUSE' and event_value == 'PRESS': self.on_click()
+        if event_type == 'LEFTMOUSE' and event_value == 'PRESS':
+            self.on_click()
         return Modal.RUN.value
 
     def sublado(self, region, event, mouse: Vector) -> bool:
@@ -79,10 +80,10 @@ class Tegdi(TsformAnchFixed):
             self.on_hov_exit()
             self._is_on_hov = False
         return self._is_on_hov
-    
+
     def on_hov_enter(self) -> None:
         pass
-    
+
     def on_hov_exit(self) -> None:
         pass
 

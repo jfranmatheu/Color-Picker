@@ -28,14 +28,15 @@ class Sld2D(Tegdi):
 
     def set_gr_overlay(self, draw_callback: callable):
         self._draw_overlay = draw_callback
-        
+
     def set_sld_x(self, data_source, attr_source: str, min_value, max_value) -> None:
         self._prev_x = self._cur_x = getattr(data_source, attr_source)
         self._data_x = data_source
         self._attr_x = attr_source
         self._min_x = min_value
         self._max_x = max_value
-        self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
+        self._factor_x = (self._cur_x - self._min_x) / \
+            (self._max_x - self._min_x)
         self._handle_pos.x = self.pos.x + self._factor_x * self.size.x
 
     def set_sld_y(self, data_source, attr_source: str, min_value, max_value) -> None:
@@ -44,44 +45,50 @@ class Sld2D(Tegdi):
         self._attr_y = attr_source
         self._min_y = min_value
         self._max_y = max_value
-        self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
+        self._factor_y = (self._cur_y - self._min_y) / \
+            (self._max_y - self._min_y)
         self._handle_pos.y = self.pos.y + self._factor_y * self.size.y
-        
+
     def upd_vals(self) -> None:
         if self._data_x and hasattr(self._data_x, self._attr_x):
             self._prev_x = self._cur_x = getattr(self._data_x, self._attr_x)
-            self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
+            self._factor_x = (self._cur_x - self._min_x) / \
+                (self._max_x - self._min_x)
             self._handle_pos.x = self.pos.x + self._factor_x * self.size.x
         if self._data_y and hasattr(self._data_y, self._attr_y):
             self._prev_y = self._cur_y = getattr(self._data_y, self._attr_y)
-            self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
+            self._factor_y = (self._cur_y - self._min_y) / \
+                (self._max_y - self._min_y)
             self._handle_pos.y = self.pos.y + self._factor_y * self.size.y
-    
-    def onchangeval_x(self, callback: callable) -> None:
+
+    def onechanval_x(self, callback: callable) -> None:
         self._on_change_value_x.append(callback)
-        
-    def onchangeval_y(self, callback: callable) -> None:
+
+    def onechanval_y(self, callback: callable) -> None:
         self._on_change_value_y.append(callback)
-        
-    def onsetval(self, callback: callable) -> None:
+
+    def onestval(self, callback: callable) -> None:
         self._on_confirm_value.append(callback)
-    
+
     def upd_handle(self):
         #self._factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
         #self._factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
-        self._handle_pos = self.dot_center_center() + Vector((self._factor_x * self.size.x, self._factor_y * self.size.y))
+        self._handle_pos = self.dot_center_center(
+        ) + Vector((self._factor_x * self.size.x, self._factor_y * self.size.y))
 
     def upd_origin(self, update_x, update_y) -> None:
         if update_x:
             if self._data_x and hasattr(self._data_x, self._attr_x):
                 setattr(self._data_x, self._attr_x, self._cur_x)
                 if self._on_change_value_x:
-                    for callback in self._on_change_value_x: callback()
+                    for callback in self._on_change_value_x:
+                        callback()
         if update_y:
             if self._data_y and hasattr(self._data_y, self._attr_y):
                 setattr(self._data_y, self._attr_y, self._cur_y)
                 if self._on_change_value_y:
-                    for callback in self._on_change_value_y: callback()
+                    for callback in self._on_change_value_y:
+                        callback()
 
     def on_slide(self, m: Vector) -> None:
         p, s = self.get_pos_size()
@@ -93,17 +100,19 @@ class Sld2D(Tegdi):
         self._cur_y = lerp(self._min_y, self._max_y, self._factor_y)
         self.upd_handle()
         if self._live_update:
-            self.upd_origin(self._prev_x != self._cur_x, self._prev_y != self._cur_y)
+            self.upd_origin(self._prev_x != self._cur_x,
+                            self._prev_y != self._cur_y)
         #print(self._factor_x, self._factor_y)
-    
+
     def on_confirm(self) -> None:
-        #if not self._live_update:
+        # if not self._live_update:
         self.upd_origin(True, True)
         self._prev_x = self._cur_x
         self._prev_y = self._cur_y
         Cursor.set_icon(None, CursorIcon.DEFAULT)
         if self._on_confirm_value:
-            for call in self._on_confirm_value: call()
+            for call in self._on_confirm_value:
+                call()
 
     def on_cancel(self) -> None:
         self._cur_x = self._prev_x
@@ -119,7 +128,7 @@ class Sld2D(Tegdi):
         factor_x = (self._cur_x - self._min_x) / (self._max_x - self._min_x)
         self._handle_pos.x = pos.x + factor_x * self.size.x
         factor_y = (self._cur_y - self._min_y) / (self._max_y - self._min_y)
-        self._handle_pos.y = pos.y + factor_y * self.size.y 
+        self._handle_pos.y = pos.y + factor_y * self.size.y
 
     def modal(self, region, event_type: str, event_value: str, mouse: Vector) -> str:
         if event_type == 'LEFTMOUSE' and event_value == 'PRESS':
@@ -158,4 +167,5 @@ class Sld2D(Tegdi):
         if not self._draw_callback:
             return
         # Vector((pos.x + self._handle_pos, pos.y + size.y / 2))
-        self._draw_callback(*self.get_pos_size(), self._handle_pos, (self._factor_x, self._factor_y))
+        self._draw_callback(*self.get_pos_size(),
+                            self._handle_pos, (self._factor_x, self._factor_y))

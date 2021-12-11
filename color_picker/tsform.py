@@ -7,27 +7,28 @@ class Tsform:
 
     def set_pos(self, _x: int, _y: int) -> None:
         self.pos = Vector((_x, _y))
-        
+
     def get_pos_size(self) -> (Vector, Vector):
         return self.pos, self.size
-    
+
     def center(self) -> Vector:
         return self.pos + self.size / 2
-    
+
     def top_right(self) -> Vector:
         return self.pos + self.size
-    
+
     def top_left(self) -> Vector:
         return self.pos + Vector((0, self.size.y))
-    
+
     def bottom_left(self) -> Vector:
         return self.pos
-    
+
     def bottom_right(self) -> Vector:
         return self.pos + Vector((self.size.x, 0))
-    
+
     def dot_center_center(self) -> Vector:
         return self.pos - self.size / 2
+
 
 class TsformAnch(Tsform):
     def set_anchor(self, _anchor: Anchor) -> None:
@@ -60,6 +61,7 @@ class TsformAnch(Tsform):
 
     def initUI(self) -> None:
         self.update()
+
 
 class TsformAnchFixed(TsformAnch):
     def set_anchor(self, _anchor: Anchor) -> None:
@@ -112,6 +114,7 @@ class TsformAnchFixed(TsformAnch):
         self.set_pos(xi, yi)
         self.set_size(*(anchor_max - self.pos))
 
+
 class TsformAdvanced(Tsform):
     def set_size(self, _width: int, _height: int) -> None:
         super().set_size(_width, _height)
@@ -131,7 +134,7 @@ class TsformAdvanced(Tsform):
         else:
             self.inner_pos = self.pos
 
-    def set_margin(self, left: int, right: int, bottom: int, top: int):
+    def set_mar(self, left: int, right: int, bottom: int, top: int):
         self.margin = (
             Vector((left, bottom)),
             Vector((right, top))
@@ -143,7 +146,7 @@ class TsformAdvanced(Tsform):
             Vector((margin, margin))
         )
 
-    def set_padding(self, left: int, right: int, bottom: int, top: int):
+    def set_pad(self, left: int, right: int, bottom: int, top: int):
         self.padding = (
             Vector((left, bottom)),
             Vector((right, top))
@@ -158,9 +161,10 @@ class TsformAdvanced(Tsform):
     def get_inner_pos_size(self) -> (Vector, Vector):
         return self.inner_pos, self.inner_size
 
+
 class TsformAdvancedAnch(TsformAdvanced, TsformAnch):
-    def set_margin(self, left: int, right: int, bottom: int, top: int):
-        super().set_margin(left, right, bottom, top)
+    def set_mar(self, left: int, right: int, bottom: int, top: int):
+        super().set_mar(left, right, bottom, top)
         self.update()
 
     def set_unified_margin(self, margin: int):
@@ -168,8 +172,8 @@ class TsformAdvancedAnch(TsformAdvanced, TsformAnch):
         self.update()
         return self
 
-    def set_padding(self, left: int, right: int, bottom: int, top: int):
-        super().set_padding(left, right, bottom, top)
+    def set_pad(self, left: int, right: int, bottom: int, top: int):
+        super().set_pad(left, right, bottom, top)
         self.update()
 
     def set_unified_padding(self, padding: int):
@@ -177,16 +181,19 @@ class TsformAdvancedAnch(TsformAdvanced, TsformAnch):
         self.update()
         return self
 
+
 class TsformAnchFixedTopBottom(TsformAnchFixed):
     def update(self) -> None:
         super().update()
         self.pos -= self.size
 
+
 class DynTsformAnchFixedTopBottom(TsformAnchFixedTopBottom):
     def update(self) -> None:
         super().update()
         if self.pos.x + self.size.x > self.parent.pos.x + self.parent.size.x:
-            diff = (self.pos.x + self.size.x) - (self.parent.pos.x + self.parent.size.x)
+            diff = (self.pos.x + self.size.x) - \
+                (self.parent.pos.x + self.parent.size.x)
             self.parent.size.x += diff
         if self.pos.y < self.parent.pos.y:
             diff = self.parent.pos.y - self.pos.y

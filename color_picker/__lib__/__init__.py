@@ -1,4 +1,8 @@
+
 # ATTENTION!! DEPRECATED!!!!!!
+from ..import __package__ as __main__
+from enum import Enum
+from mathutils import Vector
 shader_2d_area_border_frag = '''
 uniform vec4 color;
 uniform float scale;
@@ -663,11 +667,8 @@ void main()
   fragColor = texture(image, texCoord_interp);
 }
 '''
-from ..import __package__ as __main__
-from enum import Enum
-from mathutils import Vector
-if __main__ == 'ColorPicker':
-  IMG_VS = '''
+if __main__ == 'color_picker':
+    IMG_VS = '''
       uniform mat4 ModelViewProjectionMatrix;
       in vec2 texco;
       in vec2 p;
@@ -678,7 +679,7 @@ gl_Position = ModelViewProjectionMatrix * vec4(p, 1.0f, 1.0f);
 texco_interp = texco;
       }
   '''
-  IMGA_FS = '''
+    IMGA_FS = '''
       in vec2 texco_interp;
       out vec4 fragColor;
       uniform sampler2D image;
@@ -690,7 +691,7 @@ if(texColor.a < 0.05)
 fragColor = texColor;
       }
   '''
-  IMGA_GAMMCORR_FS = '''
+    IMGA_GAMMCORR_FS = '''
     in vec2 texco_interp;
     out vec4 fragColor;
     uniform sampler2D image;
@@ -703,7 +704,7 @@ discard;
       fragColor.a = texColor.a;
     }
   '''
-  IMGA_GAMMA_OP = '''
+    IMGA_GAMMA_OP = '''
     in vec2 texco_interp;
     out vec4 fragColor;
     uniform sampler2D image;
@@ -717,7 +718,7 @@ discard;
       fragColor.a = texColor.a * o;
     }
   '''
-  IMGA_GAMMCORR_BOOST_FS = """
+    IMGA_GAMMCORR_BOOST_FS = """
     in vec2 texco_interp;
     out vec4 fragColor;
     uniform sampler2D image;
@@ -749,7 +750,7 @@ discard;
       fragColor.a = texColor.a;
     }
   """
-  CF_VS = """
+    CF_VS = """
   uniform mat4 ModelViewProjectionMatrix;
   uniform float size;
   in vec2 p;
@@ -759,11 +760,11 @@ discard;
     gl_PointSize = size;
   }
   """
-  SHCx494D4741 = (IMG_VS, IMGA_FS)
-  SHCx494D47415F47414D434F = (IMG_VS, IMGA_GAMMCORR_FS)
-  SHCx494D47415F47414D434F5F424F4F5354 = (IMG_VS, IMGA_GAMMCORR_BOOST_FS)
-  SHCx494D47415F47414D4D415F4F50 = (IMG_VS, IMGA_GAMMA_OP)
-  CCROMA_HS_FS = """
+    SHCx494D4741 = (IMG_VS, IMGA_FS)
+    SHCx494D47415F47414D434F = (IMG_VS, IMGA_GAMMCORR_FS)
+    SHCx494D47415F47414D434F5F424F4F5354 = (IMG_VS, IMGA_GAMMCORR_BOOST_FS)
+    SHCx494D47415F47414D4D415F4F50 = (IMG_VS, IMGA_GAMMA_OP)
+    CCROMA_HS_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -795,7 +796,7 @@ discard;
     fragColor.a = alpha;
   }
   """
-  CRCROMA_H_FS = """
+    CRCROMA_H_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -834,7 +835,7 @@ discard;
     fragColor.a = alpha;
   }
   """
-  RCROMA_SL_FS = """
+    RCROMA_SL_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -864,7 +865,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  RCROMA_SL_LIN_FS = """
+    RCROMA_SL_LIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -885,7 +886,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  RCROMA_SL_NOLIN_FS = """
+    RCROMA_SL_NOLIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -905,7 +906,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  RCROMA_SL_LIN_SLICE_FS ="""
+    RCROMA_SL_LIN_SLICE_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -930,7 +931,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  BARCROMA_H_FS = """
+    BARCROMA_H_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -953,7 +954,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  BARCROMA_S_FS = """
+    BARCROMA_S_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -976,7 +977,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  BARCROMA_V_FS = """
+    BARCROMA_V_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1001,16 +1002,16 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  SHCx4343524F4D415F48 = (CF_VS, CRCROMA_H_FS)
-  SHCx4343524F4D415F4853 = (CF_VS, CCROMA_HS_FS)
-  SHCx4343524F4D415F534C = (CF_VS, RCROMA_SL_FS)
-  SHCx42415243524f4d415f48 = (CF_VS, BARCROMA_H_FS)
-  SHCx42415243524f4d415f53 = (CF_VS, BARCROMA_S_FS)
-  SHCx42415243524f4d415f56 = (CF_VS, BARCROMA_V_FS)
-  SHCx5243524f4d415f534c5f4c494e = (CF_VS, RCROMA_SL_LIN_FS)
-  SHCx5243524f4d415f534c5f4e4f4c494e = (CF_VS, RCROMA_SL_NOLIN_FS)
-  SHCx5243524f4d41534c4c494e534c494345 = (CF_VS, RCROMA_SL_LIN_SLICE_FS)
-  CFS2_FS = """
+    SHCx4343524F4D415F48 = (CF_VS, CRCROMA_H_FS)
+    SHCx4343524F4D415F4853 = (CF_VS, CCROMA_HS_FS)
+    SHCx4343524F4D415F534C = (CF_VS, RCROMA_SL_FS)
+    SHCx42415243524f4d415f48 = (CF_VS, BARCROMA_H_FS)
+    SHCx42415243524f4d415f53 = (CF_VS, BARCROMA_S_FS)
+    SHCx42415243524f4d415f56 = (CF_VS, BARCROMA_V_FS)
+    SHCx5243524f4d415f534c5f4c494e = (CF_VS, RCROMA_SL_LIN_FS)
+    SHCx5243524f4d415f534c5f4e4f4c494e = (CF_VS, RCROMA_SL_NOLIN_FS)
+    SHCx5243524f4d41534c4c494e534c494345 = (CF_VS, RCROMA_SL_LIN_SLICE_FS)
+    CFS2_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1032,8 +1033,8 @@ discard;
     fragColor.a *= s;
   }
   """
-  SHCx434653 = (CF_VS, CFS2_FS)
-  RCTGRAD_LIN_FS = """
+    SHCx434653 = (CF_VS, CFS2_FS)
+    RCTGRAD_LIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1049,7 +1050,7 @@ discard;
       fragColor = pow(mix(co1, co2, gl_PointCoord.y), vec4(2.2));
   }
   """
-  RCTGRAD_NOLIN_FS = """
+    RCTGRAD_NOLIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1072,7 +1073,7 @@ discard;
       fragColor = pow(mix(co1, co2, gl_PointCoord.y), vec4(.454545));
   }
   """
-  RCTGRADBAR_NOLIN_FS = """
+    RCTGRADBAR_NOLIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1089,7 +1090,7 @@ discard;
     fragColor = pow(mix(co1, co2, gl_PointCoord.x), vec4(.454545));
   }
   """
-  RCTGRADBAR_LIN_FS = """
+    RCTGRADBAR_LIN_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1116,11 +1117,11 @@ discard;
     // 2 * x - 1
   }
   """
-  SHCx524354475241445f4c494e = (CF_VS, RCTGRAD_LIN_FS)
-  SHCx524354475241445f4e4f4c494e = (CF_VS, RCTGRAD_NOLIN_FS)
-  SHCx524354475241445f4e4f4c494e10 = (CF_VS, RCTGRADBAR_LIN_FS)
-  SHCx524354475241445f4e4f4c494e11 = (CF_VS, RCTGRADBAR_NOLIN_FS)
-  RCTDOT_MASK_FS = """
+    SHCx524354475241445f4c494e = (CF_VS, RCTGRAD_LIN_FS)
+    SHCx524354475241445f4e4f4c494e = (CF_VS, RCTGRAD_NOLIN_FS)
+    SHCx524354475241445f4e4f4c494e10 = (CF_VS, RCTGRADBAR_LIN_FS)
+    SHCx524354475241445f4e4f4c494e11 = (CF_VS, RCTGRADBAR_NOLIN_FS)
+    RCTDOT_MASK_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1140,8 +1141,8 @@ discard;
       discard;
   }
   """
-  SHCx524354444f545f4d41534b = (CF_VS, RCTDOT_MASK_FS)
-  BARCROMA_R_FS = """
+    SHCx524354444f545f4d41534b = (CF_VS, RCTDOT_MASK_FS)
+    BARCROMA_R_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1157,7 +1158,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  BARCROMA_G_FS = """
+    BARCROMA_G_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1173,7 +1174,7 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  BARCROMA_B_FS = """
+    BARCROMA_B_FS = """
   #ifdef GL_ES
   precision mediump float;
   #endif
@@ -1189,82 +1190,129 @@ discard;
     fragColor.a = 1.0;
   }
   """
-  SHCx42415243524f4d415f52 = (CF_VS, BARCROMA_R_FS)
-  SHCx42415243524f4d415f47 = (CF_VS, BARCROMA_G_FS)
-  SHCx42415243524f4d415f42 = (CF_VS, BARCROMA_B_FS)
-  ''' SHADER GEOMETRY '''
-  def get_imga_coord(): return ((0, 1), (0, 0), (1, 0), (1, 1))
-  def get_imga_verts(*args):
-    x, y = args[0]
-    w, h = args[1]
-    return [[x,y+h],[x,y],[x+w,y],[x+w,y+h]]
-  def get_imga_geom(*args):return {"p" : get_imga_verts(*args), "texco" : get_imga_coord()}
-  def get_img_coord():return ((0, 0), (1, 0), (1, 1), (0, 1))
-  def get_img_verts(x,y,w,h):return ((x,y),(x+w,y),(x+w,y+h),(x,y+h))
-  def get_img_geom(*args):return {"pos" : get_img_verts(*args[0], *args[1]), "texCoord" : get_img_coord()}
-  def GeoCIR(*args):return {"p": [args[0]]}
-  def PtsRCT(x, y, w, h):return [(x,y),(x+w,y),(x,y+h),(x+w,y+h)]
-  def PtsRCT_(x, y, w, h):return [(x,y),(x+w,y),(x,y+h),(x+w,y+h)]
-  def PtsRCTCENT(x, y, w, h):return [(x-w,y-h),(x+w,y-h),(x-w,y+h),(x+w,y+h)]
-  def PtsRCTCENT_(x, y, w, h):return [(x-w,y-h),(x+w,y-h),(x-w,y+h),(x+w,y+h)]
-  def Eval(p0, p1, p2, t = .5): return (1-t)**2 * p0 + 2*t * (1-t) * p1 + t**2 * p2
-  def PtsRCTRND(x, y, w, h, r):
-    A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
-    B = Eval(Vector((x + w - r, y)), Vector((x + w, y)), Vector((x + w, y + r)))
-    C = Eval(Vector((x + w - r, y + h)), Vector((x + w, y + h)), Vector((x + w, y + h - r)))
-    D = Eval(Vector((x, y + h - r)), Vector((x, y + h)), Vector((x + r, y + h)))
-    return (( x + w / 2, y + h / 2 ),( x, y + r ),( A[0], A[1] ),( x + r, y ),( x + w - r, y ),( B[0], B[1] ),( x + w, y + r ),( x + w, y + h - r ),( C[0], C[1] ),( x + w - r, y + h ),( x + r, y + h ),( D[0], D[1] ),( x, y + h - r ))
-  def PtsMARCORCTRND(x,y,w,h,r):
-    A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
-    B = Eval(Vector((x + w - r, y)), Vector((x + w, y)), Vector((x + w, y + r)))
-    C = Eval(Vector((x + w - r, y + h)), Vector((x + w, y + h)), Vector((x + w, y + h - r)))
-    D = Eval(Vector((x, y + h - r)), Vector((x, y + h)), Vector((x + r, y + h)))
-    return (( x, y + r ),( A[0], A[1] ),( A[0], A[1] ),( x + r, y ),( x + r, y ),( x + w - r, y ),( x + w - r, y ),( B[0], B[1] ),( B[0], B[1] ),( x + w, y + r ),( x + w, y + r ),( x + w, y + h - r ),( x + w, y + h - r ),( C[0], C[1] ),( C[0], C[1] ),( x + w - r, y + h ),( x + w - r, y + h ),( x + r, y + h ),( x + r, y + h ),( D[0], D[1] ),( D[0], D[1] ),( x, y + h - r ),( x, y + h - r ),( x, y + r ))
-  def PtsRCTRNDBOT(x, y, w, h, r):
-    A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
-    B = Eval(Vector((x + w - r, y)), Vector((x + w, y)), Vector((x + w, y + r)))
-    return (( x, y + r ),( A[0], A[1] ),( x + r, y ),( x + w - r, y ),( B[0], B[1] ),( x + w, y + r ),(x + w, y + h),(x , y + h))
-  def PtsRCTRNDTOP(x, y, w, h, r):
-    C = Eval(Vector((x + w - r, y + h)), Vector((x + w, y + h)), Vector((x + w, y + h - r)))
-    D = Eval(Vector((x, y + h - r)), Vector((x, y + h)), Vector((x + r, y + h)))
-    return ((x+w,y+h-r),(C[0],C[1]),(x+w-r,y+h),(x+r,y+h),(D[0],D[1]),(x,y+h-r),(x,y),(x+w,y))
-  def PtsMARCORCT(x,y,w,h): return [(x,y),(x+w,y),(x+w,y),(x+w,y+h),(x+w,y+h),(x,y+h),(x,y+h),(x,y)]
-  IdxRCT =(( 0, 1, 2 ),( 2, 1, 3 ))
-  IdxRCTRND =(( 0,  1,  2  ),( 0,  2,  3  ),( 0,  3,  4  ),( 0,  4,  5  ),( 0,  5,  6  ),( 0,  6,  7  ),( 0,  7,  8  ),( 0,  8,  9  ),( 0,  9, 10  ),( 0, 10, 11  ),( 0, 11, 12  ),( 0, 12,  1  ))
-  IdxRCTRNDBOT =(( 3,  1,  2 ),( 1,  3,  4 ),( 1,  4,  5 ),( 0,  1,  5 ),( 0,  5,  6 ),( 0,  6,  7 ))
-  IdxRCTRNDTOP =(( 6,  7,  0 ),( 0,  6,  5 ),( 0,  5,  1 ),( 1,  5,  4 ),( 4,  2,  1 ),( 2,  4,  3 ))
-  def GeoRCT(_o, _tam): return {"pos": PtsRCT(*_o, *_tam)}
-  def GeoRCTCENT(_o, _tam): return {"pos": PtsRCTCENT(*_o, *_tam)}
-  def _GeoRCT(_ox, _oy, _tamx, _tamy): return {"pos": PtsRCT_(_ox, _oy, _tamx, _tamy)}
-  def _GeoRCTCENT(_ox, _oy, _tamx, _tamy): return {"pos": PtsRCTCENT_(_ox, _oy, _tamx, _tamy)}
-  def GeoRCTRND(_o, _tam, _r): return {"pos": PtsRCTRND(*_o, *_tam, _r)}
-  def GeoIdxRCT(): return IdxRCT
-  def GeoIdxRCTRND(): return IdxRCTRND
-  def GeoRCTRNDTOP(_o, _tam, _r): return {"pos": PtsRCTRNDTOP(*_o, *_tam, _r)}
-  def GeoRCTRNDBOT(_o, _tam, _r): return {"pos": PtsRCTRNDBOT(*_o, *_tam, _r)}
-  def GeoIdxRCTRNDTOP(): return IdxRCTRNDTOP
-  def GeoIdxRCTRNDBOT(): return IdxRCTRNDBOT
-  def GeoMARCORCT(_o,_tam): return {"pos": PtsMARCORCT(*_o, *_tam)}
-  def GeoMARCORCTRND(_o, _tam, _r): return {"pos": PtsMARCORCTRND(*_o, *_tam, _r)}
-  class ShaderGeom(Enum):
-    IMG = get_img_geom
-    IMGA = get_imga_geom
-    IMG_V = get_img_verts
-    IMG_TC = get_img_coord
-    CIR = GeoCIR
-    R_IDXS = GeoIdxRCT
-    R = GeoRCT
-    R_CENT = GeoRCTCENT
-    _R = _GeoRCT
-    _R_CENT = _GeoRCTCENT
-    R3_IDXS = GeoIdxRCTRND
-    MARCOR1 = GeoMARCORCT
-    MARCOR3 = GeoMARCORCTRND
-    R3 = GeoRCTRND
-    R3TOP = GeoRCTRNDTOP
-    R3BOT = GeoRCTRNDBOT
-    R3TOP_IDXS = GeoIdxRCTRNDTOP
-    R3BOT_IDXS = GeoIdxRCTRNDBOT
-    def __call__(self, *args):
-      if args: return self.value(*args[0])
-      else: return self.value()
+    SHCx42415243524f4d415f52 = (CF_VS, BARCROMA_R_FS)
+    SHCx42415243524f4d415f47 = (CF_VS, BARCROMA_G_FS)
+    SHCx42415243524f4d415f42 = (CF_VS, BARCROMA_B_FS)
+    ''' SHADER GEOMETRY '''
+    def get_imga_coord(): return ((0, 1), (0, 0), (1, 0), (1, 1))
+
+    def get_imga_verts(*args):
+        x, y = args[0]
+        w, h = args[1]
+        return [[x, y+h], [x, y], [x+w, y], [x+w, y+h]]
+
+    def get_imga_geom(
+        *args): return {"p": get_imga_verts(*args), "texco": get_imga_coord()}
+
+    def get_img_coord(): return ((0, 0), (1, 0), (1, 1), (0, 1))
+
+    def get_img_verts(x, y, w, h): return (
+        (x, y), (x+w, y), (x+w, y+h), (x, y+h))
+    def get_img_geom(
+        *args): return {"pos": get_img_verts(*args[0], *args[1]), "texCoord": get_img_coord()}
+
+    def GeoCIR(*args): return {"p": [args[0]]}
+    def PtsRCT(x, y, w, h): return [(x, y), (x+w, y), (x, y+h), (x+w, y+h)]
+    def PtsRCT_(x, y, w, h): return [(x, y), (x+w, y), (x, y+h), (x+w, y+h)]
+
+    def PtsRCTCENT(x, y, w, h): return [
+        (x-w, y-h), (x+w, y-h), (x-w, y+h), (x+w, y+h)]
+
+    def PtsRCTCENT_(x, y, w, h): return [
+        (x-w, y-h), (x+w, y-h), (x-w, y+h), (x+w, y+h)]
+
+    def Eval(p0, p1, p2, t=.5): return (1-t)**2 * \
+        p0 + 2*t * (1-t) * p1 + t**2 * p2
+
+    def PtsRCTRND(x, y, w, h, r):
+        A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
+        B = Eval(Vector((x + w - r, y)),
+                 Vector((x + w, y)), Vector((x + w, y + r)))
+        C = Eval(Vector((x + w - r, y + h)),
+                 Vector((x + w, y + h)), Vector((x + w, y + h - r)))
+        D = Eval(Vector((x, y + h - r)),
+                 Vector((x, y + h)), Vector((x + r, y + h)))
+        return ((x + w / 2, y + h / 2), (x, y + r), (A[0], A[1]), (x + r, y), (x + w - r, y), (B[0], B[1]), (x + w, y + r), (x + w, y + h - r), (C[0], C[1]), (x + w - r, y + h), (x + r, y + h), (D[0], D[1]), (x, y + h - r))
+
+    def PtsMARCORCTRND(x, y, w, h, r):
+        A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
+        B = Eval(Vector((x + w - r, y)),
+                 Vector((x + w, y)), Vector((x + w, y + r)))
+        C = Eval(Vector((x + w - r, y + h)),
+                 Vector((x + w, y + h)), Vector((x + w, y + h - r)))
+        D = Eval(Vector((x, y + h - r)),
+                 Vector((x, y + h)), Vector((x + r, y + h)))
+        return ((x, y + r), (A[0], A[1]), (A[0], A[1]), (x + r, y), (x + r, y), (x + w - r, y), (x + w - r, y), (B[0], B[1]), (B[0], B[1]), (x + w, y + r), (x + w, y + r), (x + w, y + h - r), (x + w, y + h - r), (C[0], C[1]), (C[0], C[1]), (x + w - r, y + h), (x + w - r, y + h), (x + r, y + h), (x + r, y + h), (D[0], D[1]), (D[0], D[1]), (x, y + h - r), (x, y + h - r), (x, y + r))
+
+    def PtsRCTRNDBOT(x, y, w, h, r):
+        A = Eval(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y)))
+        B = Eval(Vector((x + w - r, y)),
+                 Vector((x + w, y)), Vector((x + w, y + r)))
+        return ((x, y + r), (A[0], A[1]), (x + r, y), (x + w - r, y), (B[0], B[1]), (x + w, y + r), (x + w, y + h), (x, y + h))
+
+    def PtsRCTRNDTOP(x, y, w, h, r):
+        C = Eval(Vector((x + w - r, y + h)),
+                 Vector((x + w, y + h)), Vector((x + w, y + h - r)))
+        D = Eval(Vector((x, y + h - r)),
+                 Vector((x, y + h)), Vector((x + r, y + h)))
+        return ((x+w, y+h-r), (C[0], C[1]), (x+w-r, y+h), (x+r, y+h), (D[0], D[1]), (x, y+h-r), (x, y), (x+w, y))
+
+    def PtsMARCORCT(x, y, w, h): return [
+        (x, y), (x+w, y), (x+w, y), (x+w, y+h), (x+w, y+h), (x, y+h), (x, y+h), (x, y)]
+    IdxRCT = ((0, 1, 2), (2, 1, 3))
+    IdxRCTRND = ((0,  1,  2), (0,  2,  3), (0,  3,  4), (0,  4,  5), (0,  5,  6), (0,  6,  7),
+                 (0,  7,  8), (0,  8,  9), (0,  9, 10), (0, 10, 11), (0, 11, 12), (0, 12,  1))
+    IdxRCTRNDBOT = ((3,  1,  2), (1,  3,  4), (1,  4,  5),
+                    (0,  1,  5), (0,  5,  6), (0,  6,  7))
+    IdxRCTRNDTOP = ((6,  7,  0), (0,  6,  5), (0,  5,  1),
+                    (1,  5,  4), (4,  2,  1), (2,  4,  3))
+
+    def GeoRCT(_o, _tam): return {"pos": PtsRCT(*_o, *_tam)}
+    def GeoRCTCENT(_o, _tam): return {"pos": PtsRCTCENT(*_o, *_tam)}
+
+    def _GeoRCT(_ox, _oy, _tamx, _tamy): return {
+        "pos": PtsRCT_(_ox, _oy, _tamx, _tamy)}
+    def _GeoRCTCENT(_ox, _oy, _tamx, _tamy): return {
+        "pos": PtsRCTCENT_(_ox, _oy, _tamx, _tamy)}
+
+    def GeoRCTRND(_o, _tam, _r): return {"pos": PtsRCTRND(*_o, *_tam, _r)}
+    def GeoIdxRCT(): return IdxRCT
+    def GeoIdxRCTRND(): return IdxRCTRND
+
+    def GeoRCTRNDTOP(_o, _tam, _r): return {
+        "pos": PtsRCTRNDTOP(*_o, *_tam, _r)}
+    def GeoRCTRNDBOT(_o, _tam, _r): return {
+        "pos": PtsRCTRNDBOT(*_o, *_tam, _r)}
+
+    def GeoIdxRCTRNDTOP(): return IdxRCTRNDTOP
+    def GeoIdxRCTRNDBOT(): return IdxRCTRNDBOT
+    def GeoMARCORCT(_o, _tam): return {"pos": PtsMARCORCT(*_o, *_tam)}
+
+    def GeoMARCORCTRND(_o, _tam, _r): return {
+        "pos": PtsMARCORCTRND(*_o, *_tam, _r)}
+
+    class ShaderGeom(Enum):
+        IMG = get_img_geom
+        IMGA = get_imga_geom
+        IMG_V = get_img_verts
+        IMG_TC = get_img_coord
+        CIR = GeoCIR
+        R_IDXS = GeoIdxRCT
+        R = GeoRCT
+        R_CENT = GeoRCTCENT
+        _R = _GeoRCT
+        _R_CENT = _GeoRCTCENT
+        R3_IDXS = GeoIdxRCTRND
+        MARCOR1 = GeoMARCORCT
+        MARCOR3 = GeoMARCORCTRND
+        R3 = GeoRCTRND
+        R3TOP = GeoRCTRNDTOP
+        R3BOT = GeoRCTRNDBOT
+        R3TOP_IDXS = GeoIdxRCTRNDTOP
+        R3BOT_IDXS = GeoIdxRCTRNDBOT
+
+        def __call__(self, *args):
+            if args:
+                return self.value(*args[0])
+            else:
+                return self.value()
