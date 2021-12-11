@@ -106,7 +106,7 @@ class Colpk(object):
             _heigth = _width * .2
         else:
             _width = 400 * scale
-            _heigth = _width * 1
+            _heigth = _width * .5
 
         _w_2 = int(_width / 2)
         _h_2 = int(_heigth / 2)
@@ -221,8 +221,9 @@ class Colpk(object):
     def init_pk(self, context, tuoy, half=False):
         TEXT_S11_DIM_X, TEXT_S11_DIM_Y = SetFontSizeGetDim(
             0, 11, self.dpi, "O")
-        tuoy_top = Subtuoya(tuoy, Anchor(0, 1, .5, 1))
-        tuoy_top.set_pad(0, 0, 16, 0)
+        #tuoy_top = Subtuoya(tuoy, Anchor(0, 1, .5, 1))
+        #tuoy_top.set_pad(0, 0, 16, 0)
+        tuoy_top = tuoy
         if self.picker_type.startswith('SV'):
             #slcs = self.prefs.slices
             def draw(p, s, handle, co, slices, slicin):
@@ -540,7 +541,7 @@ class Colpk(object):
             pkanillo.onestval(colrec_teg.learn)
 
         # BOT
-        tuoy_bot = Subtuoya(tuoy, Anchor(0, 1, 0, .5))
+        #tuoy_bot = Subtuoya(tuoy, Anchor(0, 1, 0, .5))
         #tuoy_bot.set_pad(0, 0, 0, 4)
 
     def modal(self, context, event):
