@@ -16,7 +16,7 @@ bl_info = {
     "name": "ColorPicker",
     "author": "J. Fran Matheu (@jfranmatheu)",
     "description": "",
-    "blender": (3, 0, 0),
+    "blender": (3, 3, 0),
     "version": (1, 2, 1),
     "location": "3D Viewport > Paint tab in sidebar (Texture/Vertex/Weight paint)",
     "warning": "",
