@@ -220,7 +220,7 @@ class Colpk(object):
 
     def init_pk(self, context, tuoy, half=False):
         TEXT_S11_DIM_X, TEXT_S11_DIM_Y = SetFontSizeGetDim(
-            0, 11, self.dpi, "O")
+            0, int(11 * self.dpi / 72), "O")
         #tuoy_top = Subtuoya(tuoy, Anchor(0, 1, .5, 1))
         #tuoy_top.set_pad(0, 0, 16, 0)
         tuoy_top = tuoy
@@ -499,7 +499,7 @@ class Colpk(object):
         if self.prefs.show_hex:
             def draw(pos, size, hex):
                 Draw_Text(*pos, hex, 10)
-            dim = SetFontSizeGetDim(0, 10, self.dpi, '#000000')
+            dim = SetFontSizeGetDim(0, int(10 * self.dpi / 72), '#000000')
             preview_hex = ColPrevHex(tuoy_top, Anchor(1, dim[0]+5*self.dpi/72, .48, dim[1]) if half else Anchor(
                 1, dim[0]+5*self.dpi/72, -0.05, dim[1]), draw, self.brush)
 
