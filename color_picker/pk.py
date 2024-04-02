@@ -53,6 +53,7 @@ class Colpk(object):
         self.prefs = get_prefs(context)
         self.close_at_release = self.prefs.close_on_hotkey_release
         self.picker_type = self.prefs.color_picker_type
+        self.color_user = brush if not self.ups.use_unified_color else self.ups
         self.color = brush.color if not self.ups.use_unified_color else self.ups.color
         self.secondary_color = brush.secondary_color if not self.ups.use_unified_color else self.ups.secondary_color
         self.picking_color = False
@@ -261,15 +262,15 @@ class Colpk(object):
                     DiCRCROMA(p, s, 1, 1)
                     DiCFS(handle, rad_handle, (1, 1, 1, 1))
                     DiCLS(handle, rad_handle, 10, 1.2, (0, 0, 0, 1))
-                pkanillo = PkColorRing(self.brush, tuoy_top, Anchor(
+                pkanillo = PkColorRing(self.color_user, tuoy_top, Anchor(
                     0, .48, 0.5, 1) if half else Anchor(0, .48, 0, 1), 20, draw_anillo)
                 pkcol = ToSlicePkColorQuad(
-                    self.brush, tuoy_top, Anchor(.11, .36, 0.5, 1) if half else Anchor(.11, .36, 0, 1), draw)
+                    self.color_user, tuoy_top, Anchor(.11, .36, 0.5, 1) if half else Anchor(.11, .36, 0, 1), draw)
                 pkanillo.set_inner_teg(pkcol)
                 pkanillo.onechanval(pkcol.upd_vals)
                 pkcol.onestval(pkanillo.upd_val)
             else:
-                pkcol = ToSlicePkColorQuad(self.brush, tuoy_top, Anchor(
+                pkcol = ToSlicePkColorQuad(self.color_user, tuoy_top, Anchor(
                     0, .48, 0.5, 1) if half else Anchor(0, .48, 0, 1), draw)  # PkColorQuad
 
             def di_slc(data, wpos, wsize, fpos, fsize, value):
@@ -315,7 +316,7 @@ class Colpk(object):
                 DiCFS(handle, 6, (pow(co[0], 2.2), pow(
                     co[1], 2.2), pow(co[2], 2.2), 1))  # COLOR OK!
                 DiCLS(handle, 6, 10, 1.2, (1, 1, 1, 1))
-            pkcol = PkColorCircle(self.brush, tuoy_top, Anchor(
+            pkcol = PkColorCircle(self.color_user, tuoy_top, Anchor(
                 0, .48, 0.5, 1) if half else Anchor(0, .48, 0, 1), draw)
         # .5 + (.88-.5) / 2 * 1 + 0.04
         hsv_slds = Subtuoya(tuoy_top, Anchor(.5, 1, 0.70, .88)
@@ -339,7 +340,7 @@ class Colpk(object):
         hue_sld_box = Subtuoya(hsv_slds, Anchor(0, 1, 1 - height_fac, 1))
         hue_sld_box.stdibucalba(draw_box)
         hue_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        hue_sld = SldGraphic(self.brush.color, 'h', 0, 1, 0.001, True)
+        hue_sld = SldGraphic(self.color_user.color, 'h', 0, 1, 0.001, True)
         hue_sld.set_anchor(Anchor(0, 1, 0, 1))
         hue_sld.set_tuoy(hue_sld_box)
         hue_sld.stdibucalba(draw)
@@ -361,7 +362,7 @@ class Colpk(object):
             0, 1, height_fac, 1 - height_fac))
         sat_sld_box.stdibucalba(draw_box)
         sat_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        sat_sld = SldGraphic(self.brush.color, 's', 0.00001, 1, 0.001, True)
+        sat_sld = SldGraphic(self.color_user.color, 's', 0.00001, 1, 0.001, True)
         sat_sld.set_anchor(Anchor(0, 1, 0, 1))
         sat_sld.set_tuoy(sat_sld_box)
         sat_sld.stdibucalba(draw)
@@ -382,7 +383,7 @@ class Colpk(object):
         val_sld_box = Subtuoya(hsv_slds, Anchor(0, 1, 0, height_fac))
         val_sld_box.stdibucalba(draw_box)
         val_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        val_sld = SldGraphic(self.brush.color, 'v', 0.00001, 1, 0.001, True)
+        val_sld = SldGraphic(self.color_user.color, 'v', 0.00001, 1, 0.001, True)
         val_sld.set_anchor(Anchor(0, 1, 0, 1))
         val_sld.set_tuoy(val_sld_box)
         val_sld.stdibucalba(draw)
@@ -407,7 +408,7 @@ class Colpk(object):
         red_sld_box = Subtuoya(rgb_slds, Anchor(0, 1, 1 - height_fac, 1))
         red_sld_box.stdibucalba(draw_box)
         red_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        red_sld = SldGraphic(self.brush.color, 'r', 0, 1, 0.001, True)
+        red_sld = SldGraphic(self.color_user.color, 'r', 0, 1, 0.001, True)
         red_sld.set_anchor(Anchor(0, 1, 0, 1))
         red_sld.set_tuoy(red_sld_box)
         red_sld.stdibucalba(draw)
@@ -436,7 +437,7 @@ class Colpk(object):
             0, 1, height_fac, 1 - height_fac))
         green_sld_box.stdibucalba(draw_box)
         green_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        green_sld = SldGraphic(self.brush.color, 'g', 0, 1, 0.001, True)
+        green_sld = SldGraphic(self.color_user.color, 'g', 0, 1, 0.001, True)
         green_sld.set_anchor(Anchor(0, 1, 0, 1))
         green_sld.set_tuoy(green_sld_box)
         green_sld.stdibucalba(draw)
@@ -464,7 +465,7 @@ class Colpk(object):
             0, 1, 0, height_fac))  # 0, 1 - height_fac * 5
         blue_sld_box.stdibucalba(draw_box)
         blue_sld_box.set_pad(TEXT_S11_DIM_X + 10, 4, 2, 2)
-        blue_sld = SldGraphic(self.brush.color, 'b', 0, 1, 0.001, True)
+        blue_sld = SldGraphic(self.color_user.color, 'b', 0, 1, 0.001, True)
         blue_sld.set_anchor(Anchor(0, 1, 0, 1))
         blue_sld.set_tuoy(blue_sld_box)
         blue_sld.stdibucalba(draw)
@@ -488,7 +489,7 @@ class Colpk(object):
             DiRCT(pos, (size.x, half_height), (*new_color, 1))
             DiMARCRCT(pos, size, (.7, .7, .7, 1))
         preview_diff = ColPrevDiff(
-            colors_box, Anchor(0, 0.08, 0, 1), draw, self.brush)
+            colors_box, Anchor(0, 0.08, 0, 1), draw, self.color_user)
         hue_sld.onestval(preview_diff.confirm_new_color)
         sat_sld.onestval(preview_diff.confirm_new_color)
         val_sld.onestval(preview_diff.confirm_new_color)
@@ -501,7 +502,7 @@ class Colpk(object):
                 Draw_Text(*pos, hex, 10)
             dim = SetFontSizeGetDim(0, int(10 * self.dpi / 72), '#000000')
             preview_hex = ColPrevHex(tuoy_top, Anchor(1, dim[0]+5*self.dpi/72, .48, dim[1]) if half else Anchor(
-                1, dim[0]+5*self.dpi/72, -0.05, dim[1]), draw, self.brush)
+                1, dim[0]+5*self.dpi/72, -0.05, dim[1]), draw, self.color_user)
 
         def draw(slots, size, data, hov_idx):
             n = len(slots) - 1
@@ -512,7 +513,7 @@ class Colpk(object):
             if hov_idx != -1:
                 DiMARCRCT(slots[hov_idx], size, (1, 1, 1, 1))
         colrec_teg = ColRec(colors_box, Anchor(.1, 1, 0, 1),
-                            draw, 2, 12, 2, self.brush, 'color', 0, True, 'ColRec')
+                            draw, 2, 12, 2, self.color_user, 'color', 0, True, 'ColRec')
         hue_sld.onestval(colrec_teg.learn)
         sat_sld.onestval(colrec_teg.learn)
         val_sld.onestval(colrec_teg.learn)
